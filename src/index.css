@@ -1,3 +1,89 @@
+@font-face {
+  font-family: 'Guido HU';
+  src: url('./static/GuidoHU.woff2') format('woff2'),
+    url('./static/GuidoHU.woff') format('woff'),
+    url('./static/GuidoHU.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Book Antiqua';
+  src: url('./static/BookAntiqua-BoldItalic.woff2') format('woff2'),
+      url('./static/BookAntiqua-BoldItalic.woff') format('woff'),
+      url('./static/BookAntiqua-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Book Antiqua';
+  src: url('./static/BookAntiqua-Bold.woff2') format('woff2'),
+      url('./static/BookAntiqua-Bold.woff') format('woff'),
+      url('./static/BookAntiqua-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Book Antiqua';
+  src: url('./static/BookAntiqua-Italic.woff2') format('woff2'),
+      url('./static/BookAntiqua-Italic.woff') format('woff'),
+      url('./static/BookAntiqua-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Book Antiqua';
+  src: url('./static/BookAntiqua.woff2') format('woff2'),
+      url('./static/BookAntiqua.woff') format('woff'),
+      url('./static/BookAntiqua.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.music {
+  font-family: 'Guido HU';
+  font-size: 40px;
+  white-space: pre;
+}
+
+.musictext {
+  font-family: "Book Antiqua";
+  font-size: 20px;
+  white-space: pre;
+  display: inline-block;
+  text-align: center;
+  min-height: 5px;
+}
+
+.musictext em {
+  font-weight: bold;
+  color: red;
+  font-style: normal;
+}
+
+.inline-input {
+  min-width: 10px;
+}
+
+.BNS-textus {
+  font-family: "Book Antiqua";
+  font-size: 20px;
+}
+
+.BNS-textus::first-letter {
+  font-weight: bold;
+  color: red;
+  text-align: justify;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -24,9 +110,11 @@ h1 {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
