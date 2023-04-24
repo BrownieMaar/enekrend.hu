@@ -62,7 +62,7 @@ export class CantusImpl implements Cantus {
         throw new Error("Method not implemented.");
     }
 
-    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20 }: CantusComponentProps): JSX.Element {
+    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20, maxLines  }: CantusComponentProps): JSX.Element {
         const [stateMelody, setStateMelody] = useState([...this.contents.melody]);
         const [editedElement, setEditedElement] = useState<{ index: number, target: "text" | "melody" | undefined }>({ index: -1, target: undefined });
 
@@ -265,7 +265,7 @@ export class CantusImpl implements Cantus {
 
 
         return <div style={{ overflow: "hidden" }} >
-            {lines.map((line, i) => {
+            {lines.slice(0, maxLines ).map((line, i) => {
                 return <div className="line" key={`${this.getIncipit()} line ${i + 1}`}>
                     <div className="music" style={{fontSize: fontSize * 2}}>{line.music}</div>
                     <div className="musictext" style={{fontSize: fontSize}}>{line.text}</div>
