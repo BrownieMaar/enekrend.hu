@@ -26,8 +26,9 @@ export interface Cantus extends CantusData {
 
 export interface CantusComponentProps {
     width: number,
-    sheetType?: SheetType
-    editable?: boolean
+    sheetType?: SheetType,
+    editable?: boolean,
+    fontSize?: number,
 }
 
 export interface AntiphonaOfficium extends Cantus {
