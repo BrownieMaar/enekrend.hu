@@ -3,7 +3,7 @@ import { MelodyWithText } from "../model/types/CantusTypes";
 
 export class InputControl {
     stateMelody: MelodyWithText[];
-    setStateMelody: React.Dispatch<React.SetStateAction<MelodyWithText[]>>;
+    setStateMelody: (value: MelodyWithText[]) => void;
     editedElement: {
         index: number;
         target: "text" | "melody" | undefined;
@@ -16,7 +16,7 @@ export class InputControl {
 
     constructor(
         stateMelody: MelodyWithText[],
-        setStateMelody: React.Dispatch<React.SetStateAction<MelodyWithText[]>>,
+        setStateMelody: (value: MelodyWithText[]) => void,
         editedElement: {
             index: number;
             target: "text" | "melody" | undefined;
