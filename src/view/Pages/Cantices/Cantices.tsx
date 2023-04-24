@@ -1,4 +1,4 @@
-import { Grid, Paper } from "@mui/material"
+import { Grid, Paper, Typography } from "@mui/material"
 import { getCantusFromCantusScript } from "../../../controller/fontTools"
 import { useEffect, useState } from "react"
 
@@ -19,7 +19,6 @@ export default function Cantices() {
     useEffect(() => {
         window.addEventListener("resize", () => {
             setElementWidth(document.getElementById("grid-item-0")?.clientWidth ?? 0);
-            console.log("resize");
         });
         requestAnimationFrame(() => {
             setElementWidth(document.getElementById("grid-item-0")?.clientWidth ?? 0);
@@ -29,8 +28,13 @@ export default function Cantices() {
     return <Grid container spacing={2}>
         {mockData.map((cantus, i) =>
             <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={i}>
-                <Paper elevation={3} id={`grid-item-${i}`} style={{ padding: 10, maxHeight: 100, overflowY: "hidden", overflowX: "hidden" }}>
-                    {cantus.Component({ width: elementWidth - 10, fontSize: 15 })}
+                <Paper elevation={3} id={`grid-item-${i}`} style={{ padding: 10, cursor: "pointer" }}>
+                    <Typography variant="h5" style={{ marginBottom: 10 }}>
+                        {cantus.getIncipit()}
+                    </Typography>
+                    <div style={{userSelect: "none", border: "1px solid black", borderRadius: 10, padding: 10}}>
+                        {cantus.Component({ width: elementWidth - 40, fontSize: 15, maxLines: 2 })}
+                    </div>
                 </Paper>
             </Grid>
         )}
