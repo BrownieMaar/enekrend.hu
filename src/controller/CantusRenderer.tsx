@@ -62,7 +62,7 @@ export class CantusImpl implements Cantus {
         throw new Error("Method not implemented.");
     }
 
-    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, }: CantusComponentProps): JSX.Element {
+    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20 }: CantusComponentProps): JSX.Element {
         const [stateMelody, setStateMelody] = useState([...this.contents.melody]);
         const [editedElement, setEditedElement] = useState<{ index: number, target: "text" | "melody" | undefined }>({ index: -1, target: undefined });
 
