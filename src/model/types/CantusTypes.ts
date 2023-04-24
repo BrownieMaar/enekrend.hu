@@ -29,6 +29,7 @@ export interface CantusComponentProps {
     sheetType?: SheetType,
     editable?: boolean,
     fontSize?: number,
+    maxLines?: number,
 }
 
 export interface AntiphonaOfficium extends Cantus {
