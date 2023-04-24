@@ -68,7 +68,7 @@ export class CantusImpl implements Cantus {
 
         
 
-        const inputControl = new InputControl(stateMelody, setStateMelody, editedElement, setEditedElement, this.getIncipit(),)
+        const inputControl = new InputControl(stateMelody, (value) => {setStateMelody(value); this.contents.melody = value;}, editedElement, setEditedElement, this.getIncipit(),)
 
 
         const GUIDO_FONTSIZE = 40;
@@ -81,11 +81,7 @@ export class CantusImpl implements Cantus {
             return this.contents.clef + KeysAsGuido[this.contents.signatures[0].signature] + "-"
         }
 
-        const triggerThisFromTheOutside = () => {
-            console.log(JSON.stringify(stateMelody))
-        }
-
-        const { music, text, lineLength, lines, savedLineLengths } = stateMelody
+        const { music, text, lineLength, lines, savedLineLengths } = this.contents.melody
             .reduce((acc: {
                 music: JSX.Element[];
                 text: JSX.Element[];
