@@ -71,9 +71,9 @@ export class CantusImpl implements Cantus {
         const inputControl = new InputControl(stateMelody, (value) => {setStateMelody(value); this.contents.melody = value;}, editedElement, setEditedElement, this.getIncipit(),)
 
 
-        const GUIDO_FONTSIZE = 40;
+        const GUIDO_FONTSIZE = fontSize * 2;
         const GUIDO_FONT = "Guido HU";
-        const TEXT_FONTSIZE = 20;
+        const TEXT_FONTSIZE = fontSize;
         const TEXT_FONT = sheetType === "ELTE" ? "Book Antiqua" : "Times New Roman";
 
 
@@ -152,11 +152,11 @@ export class CantusImpl implements Cantus {
                     isElementEdited("melody") && editable
                         ? <input
                             id={`input-melody-${this.getIncipit()}-${i}`}
-                            className="music inline-input"
+                            className="inline-input"
                             type="text"
                             key={`${this.getIncipit()} music input for ${i}`}
                             defaultValue={currentInfo.actualMelody}
-                            style={{ width: currentInfo.melodyWidth, textAlign: "center" }}
+                            style={{ width: currentInfo.melodyWidth, textAlign: "center", fontSize: GUIDO_FONTSIZE, fontFamily: GUIDO_FONT }}
                             onInput={(e) => inputControl.handleInput(e, i, "melody")}
                             onBlur={(_e) => setEditedElement({ index: -1, target: undefined })}
                             onKeyDown={(e) => inputControl.handleInputKeyDown(e, i, "melody")}
@@ -169,11 +169,11 @@ export class CantusImpl implements Cantus {
                     isElementEdited("text") && editable
                         ? <input
                             id={`input-text-${this.getIncipit()}-${i}`}
-                            className="musictext inline-input"
+                            className="inline-input"
                             type="text"
                             key={`${this.getIncipit()} text input for ${i}`}
                             defaultValue={curr.text}
-                            style={{ width: currentInfo.textWidth }}
+                            style={{ width: currentInfo.textWidth, fontSize: TEXT_FONTSIZE, fontFamily: TEXT_FONT }}
                             onInput={(e) => inputControl.handleInput(e, i, "text")}
                             onBlur={(_e) => setEditedElement({ index: -1, target: undefined })}
                             onKeyDown={(e) => inputControl.handleInputKeyDown(e, i, "text")}
@@ -214,7 +214,7 @@ export class CantusImpl implements Cantus {
                     if (!isLast || (isLast && wouldThisLineBeTooLong)) {
                         const spacerCharacterWidth = getCharacterWidthInPixels("¨", GUIDO_FONT, GUIDO_FONTSIZE);
                         // TODO: remove inline style & add global component option to opt out of this
-                        const lineEnderSpan = <span className="music" style={{ color: "gray" }}>
+                        const lineEnderSpan = <span style={{ color: "gray" }}>
                             {"¨".repeat(Math.floor(widthToLineEnd / spacerCharacterWidth))}
                         </span>
                         acc.music.push(lineEnderSpan)
@@ -267,8 +267,8 @@ export class CantusImpl implements Cantus {
         return <div style={{ overflow: "hidden" }} >
             {lines.map((line, i) => {
                 return <div className="line" key={`${this.getIncipit()} line ${i + 1}`}>
-                    <div className="music">{line.music}</div>
-                    <div className="musictext">{line.text}</div>
+                    <div className="music" style={{fontSize: fontSize * 2}}>{line.music}</div>
+                    <div className="musictext" style={{fontSize: fontSize}}>{line.text}</div>
                 </div>
             })}
         </div>
@@ -276,5 +276,5 @@ export class CantusImpl implements Cantus {
 }
 
 function SpacedSpan({ width, children, id, onDoubleClick }: { width?: number, children?: JSX.Element | string | string[], id?: string, onDoubleClick?: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void }) {
-    return <span onDoubleClick={onDoubleClick} className="musictext" id={id} style={(width !== undefined ? { width: width + "px" } : undefined)}>{children ?? ""}</span>
+    return <span onDoubleClick={onDoubleClick} style={{display: "inline-block", width: width}} id={id} >{children ?? ""}</span>
 }
