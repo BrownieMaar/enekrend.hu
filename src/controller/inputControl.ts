@@ -206,16 +206,25 @@ export class InputControl {
 
         if (e.key === "Spacebar" || e.key === " ") {
             e.preventDefault();
-            this.addNewElementAfter(index, indexInInput ?? 0, target)
-            if (!isFirstInInput || isLastInInput) gotoNextIfAvailable(false);
-            else this.emptyInput(target, index)
+            if ((target === "text" && this.stateMelody[index + 1]?.melody !== "" && this.stateMelody[index + 1]?.text === "") || (target === "melody" && this.stateMelody[index + 1]?.text !== "" && this.stateMelody[index + 1]?.melody === "")) {
+                gotoNextIfAvailable()
+            } else {
+                this.addNewElementAfter(index, indexInInput ?? 0, target)
+                if (!isFirstInInput || isLastInInput) gotoNextIfAvailable();
+                else this.emptyInput(target, index)
+            }
         }
         
         if (e.key === "-" && target === "text") {
             e.preventDefault();
-            this.addNewElementAfter(index, indexInInput ?? 0, target, false);
-            if (!isFirstInInput || isLastInInput) gotoNextIfAvailable(false);
-            else this.emptyInput(target, index)
+            if (this.stateMelody[index + 1]?.melody !== "" && this.stateMelody[index + 1]?.text === "") {
+                this.handleIsSpaceAfterUpdate(index, false)
+                gotoNextIfAvailable()
+            } else {
+                this.addNewElementAfter(index, indexInInput ?? 0, target, false);
+                if (!isFirstInInput || isLastInInput) gotoNextIfAvailable();
+                else this.emptyInput(target, index)
+            }
         }
 
         if (e.key === "Backspace" && isFirstInInput && index > 0) {
