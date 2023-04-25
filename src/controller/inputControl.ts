@@ -55,6 +55,16 @@ export class InputControl {
         });
     }
 
+    gotoIndexInInput = (target: "text" | "melody", melodyIndex: number, indexToGoTo: number) => {
+        requestAnimationFrame(() => {
+            const element = document.getElementById(`input-${target}-${this.uniqueId}-${melodyIndex}`);
+            if (element && element instanceof HTMLInputElement) {
+                element.focus();
+                element.setSelectionRange(indexToGoTo, indexToGoTo);
+            }
+        });
+    }
+
     addNewElementAfter = (melodyIndex: number, inputIndex: number, target: "text" | "melody", isSpaceAfter: boolean = true) => {
         const newStateMelody = [...this.stateMelody];
         const isLast = target === "text" ? inputIndex === newStateMelody[melodyIndex].text.length : inputIndex === newStateMelody[melodyIndex].melody.length;
@@ -106,6 +116,18 @@ export class InputControl {
         ];
 
         newStateMelody.splice(melodyIndex, 1, newMelodyWithTextA, newMelodyWithTextB);
+        this.setStateMelody(newStateMelody);
+    }
+
+    mergeWithPrevious = (melodyIndex: number) => {
+        const newStateMelody = [...this.stateMelody];
+        const previousMelody = newStateMelody[melodyIndex - 1];
+        const currentMelody = newStateMelody[melodyIndex];
+        newStateMelody.splice(melodyIndex - 1, 2, {
+            melody: previousMelody.melody + currentMelody.melody,
+            isSpaceAfter: currentMelody.isSpaceAfter,
+            text: previousMelody.text + currentMelody.text,
+        });
         this.setStateMelody(newStateMelody);
     }
 
@@ -195,6 +217,13 @@ export class InputControl {
             this.addNewElementAfter(index, indexInInput ?? 0, target, false);
             if (!isFirstInInput || isLastInInput) gotoNextIfAvailable(false);
             else this.emptyInput(target, index)
+        }
+
+        if (e.key === "Backspace" && isFirstInInput && index > 0) {
+            e.preventDefault();
+            this.mergeWithPrevious(index);
+            gotoPreviousIfAvailable();
+            // this.gotoIndexInInput TODO: finish this
         }
 
         if (e.key === "ArrowLeft" && isFirstInInput) {
