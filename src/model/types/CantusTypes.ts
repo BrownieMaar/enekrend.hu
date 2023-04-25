@@ -1,6 +1,6 @@
 export interface CantusData {
     cantusId?: string;
-    uniqueId?: string;
+    uniqueId: string;
     codexSourceId?: string;
     contents: {
         signatures: {

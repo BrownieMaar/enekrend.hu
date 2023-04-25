@@ -3,11 +3,12 @@ import { KeysAsGuido, getCharacterWidthInPixels, getKeyFromString, } from "./fon
 import { InputControl } from "./inputControl";
 import { RendererTools } from "./rendererTools";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 
 export class CantusImpl implements Cantus {
     cantusId?: string | undefined;
-    uniqueId?: string | undefined;
+    uniqueId: string;
     codexSourceId?: string | undefined;
     contents: { signatures: { signature: KeySignature; position: number; }[]; melody: MelodyWithText[]; clef: Clef };
     genre?: string | undefined;
@@ -16,6 +17,7 @@ export class CantusImpl implements Cantus {
     constructor(sourceData?: MelodyWithText[] | CantusData) {
         if (sourceData) {
             if (Array.isArray(sourceData)) {
+                this.uniqueId = uuidv4();
                 this.contents = {
                     signatures: [{ signature: getKeyFromString(sourceData[0].melody.substring(1)), position: 0 }],
                     melody: sourceData.slice(1),
@@ -30,6 +32,7 @@ export class CantusImpl implements Cantus {
                 this.contents = sourceData.contents;
             }
         } else {
+            this.uniqueId = uuidv4();
             this.contents = {
                 signatures: [],
                 melody: [],
@@ -62,13 +65,13 @@ export class CantusImpl implements Cantus {
         throw new Error("Method not implemented.");
     }
 
-    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20, maxLines  }: CantusComponentProps): JSX.Element {
+    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20, maxLines }: CantusComponentProps): JSX.Element {
         const [stateMelody, setStateMelody] = useState([...this.contents.melody]);
         const [editedElement, setEditedElement] = useState<{ index: number, target: "text" | "melody" | undefined }>({ index: -1, target: undefined });
 
-        
 
-        const inputControl = new InputControl(stateMelody, (value) => {setStateMelody(value); this.contents.melody = value;}, editedElement, setEditedElement, this.getIncipit(),)
+
+        const inputControl = new InputControl(stateMelody, (value) => { setStateMelody(value); this.contents.melody = value; }, editedElement, setEditedElement, this.uniqueId,)
 
 
         const GUIDO_FONTSIZE = fontSize * 2;
@@ -148,38 +151,38 @@ export class CantusImpl implements Cantus {
 
 
                 const returnMusic = [
-                    <span key={`${this.getIncipit()} music span before ${i}`}>{renderTools.getWhiteSpaceCharsBefore(currentInfo)}</span>,
+                    <span key={`${this.uniqueId} music span before ${i}`}>{renderTools.getWhiteSpaceCharsBefore(currentInfo)}</span>,
                     isElementEdited("melody") && editable
                         ? <input
-                            id={`input-melody-${this.getIncipit()}-${i}`}
+                            id={`input-melody-${this.uniqueId}-${i}`}
                             className="inline-input"
                             type="text"
-                            key={`${this.getIncipit()} music input for ${i}`}
+                            key={`${this.uniqueId} music input for ${i}`}
                             defaultValue={currentInfo.actualMelody}
                             style={{ width: currentInfo.melodyWidth, textAlign: "center", fontSize: GUIDO_FONTSIZE, fontFamily: GUIDO_FONT }}
                             onInput={(e) => inputControl.handleInput(e, i, "melody")}
                             onBlur={(_e) => setEditedElement({ index: -1, target: undefined })}
                             onKeyDown={(e) => inputControl.handleInputKeyDown(e, i, "melody")}
                         />
-                        : <span key={`${this.getIncipit()} music span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "melody")}>{currentInfo.actualMelody}</span>,
-                    <span key={`${this.getIncipit()} music span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "melody")}>{renderTools.getWhiteSpaceCharsAfter(curr.isSpaceAfter, currentInfo, nextInfo)}</span>
+                        : <span key={`${this.uniqueId} music span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "melody")}>{currentInfo.actualMelody}</span>,
+                    <span key={`${this.uniqueId} music span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "melody")}>{renderTools.getWhiteSpaceCharsAfter(curr.isSpaceAfter, currentInfo, nextInfo)}</span>
                 ];
                 const returnTextSpans = [
-                    <SpacedSpan width={beforeWhiteSpaceWidth} key={`${this.getIncipit()} text span before ${i}`} />,
+                    <SpacedSpan width={beforeWhiteSpaceWidth} key={`${this.uniqueId} text span before ${i}`} />,
                     isElementEdited("text") && editable
                         ? <input
-                            id={`input-text-${this.getIncipit()}-${i}`}
+                            id={`input-text-${this.uniqueId}-${i}`}
                             className="inline-input"
                             type="text"
-                            key={`${this.getIncipit()} text input for ${i}`}
+                            key={`${this.uniqueId} text input for ${i}`}
                             defaultValue={curr.text}
                             style={{ width: currentInfo.textWidth, fontSize: TEXT_FONTSIZE, fontFamily: TEXT_FONT }}
                             onInput={(e) => inputControl.handleInput(e, i, "text")}
                             onBlur={(_e) => setEditedElement({ index: -1, target: undefined })}
                             onKeyDown={(e) => inputControl.handleInputKeyDown(e, i, "text")}
                         />
-                        : <span key={`${this.getIncipit()} text span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")}>{currentInfo.isFirst ? <><em>{curr.text[0]}</em>{curr.text.slice(1)}</> :  <>{curr.text}</> }</span>,
-                    <SpacedSpan key={`${this.getIncipit()} text span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")} width={afterWhiteSpaceWidth} >{textSeparator}</SpacedSpan>
+                        : <span key={`${this.uniqueId} text span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")}>{currentInfo.isFirst ? <><em>{curr.text[0]}</em>{curr.text.slice(1)}</> : <>{curr.text}</>}</span>,
+                    <SpacedSpan key={`${this.uniqueId} text span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")} width={afterWhiteSpaceWidth} >{textSeparator}</SpacedSpan>
                 ];
 
                 const currentMusicWidth = getCharacterWidthInPixels(renderTools.getWhiteSpaceCharsBefore(currentInfo) + currentInfo.actualMelody + renderTools.getWhiteSpaceCharsAfter(curr.isSpaceAfter, currentInfo, nextInfo), GUIDO_FONT, GUIDO_FONTSIZE)
@@ -265,10 +268,10 @@ export class CantusImpl implements Cantus {
 
 
         return <div style={{ overflow: "hidden" }} >
-            {lines.slice(0, maxLines ).map((line, i) => {
-                return <div className="line" key={`${this.getIncipit()} line ${i + 1}`}>
-                    <div className="music" style={{fontSize: fontSize * 2}}>{line.music}</div>
-                    <div className="musictext" style={{fontSize: fontSize}}>{line.text}</div>
+            {lines.slice(0, maxLines).map((line, i) => {
+                return <div className="line" key={`${this.uniqueId} line ${i + 1}`}>
+                    <div className="music" style={{ fontSize: fontSize * 2 }}>{line.music}</div>
+                    <div className="musictext" style={{ fontSize: fontSize }}>{line.text}</div>
                 </div>
             })}
         </div>
@@ -276,5 +279,5 @@ export class CantusImpl implements Cantus {
 }
 
 function SpacedSpan({ width, children, id, onDoubleClick }: { width?: number, children?: JSX.Element | string | string[], id?: string, onDoubleClick?: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void }) {
-    return <span onDoubleClick={onDoubleClick} style={{display: "inline-block", width: width}} id={id} >{children ?? ""}</span>
+    return <span onDoubleClick={onDoubleClick} style={{ display: "inline-block", width: width }} id={id} >{children ?? ""}</span>
 }
