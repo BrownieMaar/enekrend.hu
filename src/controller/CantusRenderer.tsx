@@ -3,11 +3,12 @@ import { KeysAsGuido, getCharacterWidthInPixels, getKeyFromString, } from "./fon
 import { InputControl } from "./inputControl";
 import { RendererTools } from "./rendererTools";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 
 export class CantusImpl implements Cantus {
     cantusId?: string | undefined;
-    uniqueId?: string | undefined;
+    uniqueId: string;
     codexSourceId?: string | undefined;
     contents: { signatures: { signature: KeySignature; position: number; }[]; melody: MelodyWithText[]; clef: Clef };
     genre?: string | undefined;
@@ -16,6 +17,7 @@ export class CantusImpl implements Cantus {
     constructor(sourceData?: MelodyWithText[] | CantusData) {
         if (sourceData) {
             if (Array.isArray(sourceData)) {
+                this.uniqueId = uuidv4();
                 this.contents = {
                     signatures: [{ signature: getKeyFromString(sourceData[0].melody.substring(1)), position: 0 }],
                     melody: sourceData.slice(1),
@@ -30,6 +32,7 @@ export class CantusImpl implements Cantus {
                 this.contents = sourceData.contents;
             }
         } else {
+            this.uniqueId = uuidv4();
             this.contents = {
                 signatures: [],
                 melody: [],
@@ -62,13 +65,13 @@ export class CantusImpl implements Cantus {
         throw new Error("Method not implemented.");
     }
 
-    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20, maxLines  }: CantusComponentProps): JSX.Element {
+    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20, maxLines }: CantusComponentProps): JSX.Element {
         const [stateMelody, setStateMelody] = useState([...this.contents.melody]);
         const [editedElement, setEditedElement] = useState<{ index: number, target: "text" | "melody" | undefined }>({ index: -1, target: undefined });
 
-        
 
-        const inputControl = new InputControl(stateMelody, (value) => {setStateMelody(value); this.contents.melody = value;}, editedElement, setEditedElement, this.getIncipit(),)
+
+        const inputControl = new InputControl(stateMelody, (value) => { setStateMelody(value); this.contents.melody = value; }, editedElement, setEditedElement, this.getIncipit(),)
 
 
         const GUIDO_FONTSIZE = fontSize * 2;
@@ -178,7 +181,7 @@ export class CantusImpl implements Cantus {
                             onBlur={(_e) => setEditedElement({ index: -1, target: undefined })}
                             onKeyDown={(e) => inputControl.handleInputKeyDown(e, i, "text")}
                         />
-                        : <span key={`${this.getIncipit()} text span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")}>{currentInfo.isFirst ? <><em>{curr.text[0]}</em>{curr.text.slice(1)}</> :  <>{curr.text}</> }</span>,
+                        : <span key={`${this.getIncipit()} text span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")}>{currentInfo.isFirst ? <><em>{curr.text[0]}</em>{curr.text.slice(1)}</> : <>{curr.text}</>}</span>,
                     <SpacedSpan key={`${this.getIncipit()} text span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")} width={afterWhiteSpaceWidth} >{textSeparator}</SpacedSpan>
                 ];
 
@@ -265,10 +268,10 @@ export class CantusImpl implements Cantus {
 
 
         return <div style={{ overflow: "hidden" }} >
-            {lines.slice(0, maxLines ).map((line, i) => {
+            {lines.slice(0, maxLines).map((line, i) => {
                 return <div className="line" key={`${this.getIncipit()} line ${i + 1}`}>
-                    <div className="music" style={{fontSize: fontSize * 2}}>{line.music}</div>
-                    <div className="musictext" style={{fontSize: fontSize}}>{line.text}</div>
+                    <div className="music" style={{ fontSize: fontSize * 2 }}>{line.music}</div>
+                    <div className="musictext" style={{ fontSize: fontSize }}>{line.text}</div>
                 </div>
             })}
         </div>
@@ -276,5 +279,5 @@ export class CantusImpl implements Cantus {
 }
 
 function SpacedSpan({ width, children, id, onDoubleClick }: { width?: number, children?: JSX.Element | string | string[], id?: string, onDoubleClick?: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void }) {
-    return <span onDoubleClick={onDoubleClick} style={{display: "inline-block", width: width}} id={id} >{children ?? ""}</span>
+    return <span onDoubleClick={onDoubleClick} style={{ display: "inline-block", width: width }} id={id} >{children ?? ""}</span>
 }
