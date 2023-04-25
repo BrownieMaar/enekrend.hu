@@ -46,13 +46,66 @@ export class InputControl {
         this.setStateMelody(newStateMelody);
     }
 
-    addNewElementAfter = (index: number, isSpaceAfter: boolean = true) => {
-        const newStateMelody = [...this.stateMelody];
-        newStateMelody.splice(index + 1, 0, {
-            melody: "",
-            isSpaceAfter: isSpaceAfter,
-            text: "",
+    emptyInput = (target: "text" | "melody", index: number ) => {
+        requestAnimationFrame(() => {
+            const element = document.getElementById(`input-${target}-${this.uniqueId}-${index}`);
+            if (element && element instanceof HTMLInputElement) {
+                element.value = "";
+            }
         });
+    }
+
+    addNewElementAfter = (melodyIndex: number, inputIndex: number, target: "text" | "melody", isSpaceAfter: boolean = true) => {
+        const newStateMelody = [...this.stateMelody];
+        const isLast = target === "text" ? inputIndex === newStateMelody[melodyIndex].text.length : inputIndex === newStateMelody[melodyIndex].melody.length;
+        const isFirst = inputIndex === 0;
+        const [newMelodyWithTextA, newMelodyWithTextB] = isLast ? [
+            {
+                melody: newStateMelody[melodyIndex].melody,
+                isSpaceAfter: isSpaceAfter,
+                text: newStateMelody[melodyIndex].text,
+            },
+            {
+                melody: "",
+                isSpaceAfter: newStateMelody[melodyIndex].isSpaceAfter,
+                text: "",
+            }
+        ] : isFirst ? [
+            {
+                melody: "",
+                isSpaceAfter: isSpaceAfter,
+                text: "",
+            },
+            {
+                melody: newStateMelody[melodyIndex].melody,
+                isSpaceAfter: newStateMelody[melodyIndex].isSpaceAfter,
+                text: newStateMelody[melodyIndex].text,
+            }
+        ] : target === "text" ? [
+            {
+                melody: newStateMelody[melodyIndex].melody,
+                isSpaceAfter: isSpaceAfter,
+                text: newStateMelody[melodyIndex].text.slice(0, inputIndex),
+            },
+            {
+                melody: "",
+                isSpaceAfter: newStateMelody[melodyIndex].isSpaceAfter,
+                text: newStateMelody[melodyIndex].text.slice(inputIndex),
+            }
+        ] : [
+            {
+                melody: newStateMelody[melodyIndex].melody.slice(0, inputIndex),
+                isSpaceAfter: isSpaceAfter,
+                text: newStateMelody[melodyIndex].text,
+            },
+            {
+                melody: newStateMelody[melodyIndex].melody.slice(inputIndex),
+                isSpaceAfter: newStateMelody[melodyIndex].isSpaceAfter,
+                text: "",
+            }
+        ];
+
+        newStateMelody.splice(melodyIndex, 1, newMelodyWithTextA, newMelodyWithTextB);
         this.setStateMelody(newStateMelody);
     }
 
@@ -63,6 +116,7 @@ export class InputControl {
             newStateMelody[0].text = "";
             newStateMelody[0].isSpaceAfter = true;
             this.setStateMelody(newStateMelody);
+            if (this.editedElement.target) this.emptyInput(this.editedElement.target, 0);
         } else {
             newStateMelody.splice(index, 1);
             this.setStateMelody(newStateMelody);
@@ -75,8 +129,9 @@ export class InputControl {
 
     handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number, target: "text" | "melody") => {
 
-        const isLastInInput = e.currentTarget.selectionStart === e.currentTarget.value.length;
-        const isFirstInInput = e.currentTarget.selectionStart === 0;
+        const indexInInput = e.currentTarget.selectionStart;
+        const isLastInInput = indexInInput === e.currentTarget.value.length;
+        const isFirstInInput = indexInInput === 0;
 
         const gotoNextIfAvailable = (selectAll: boolean = false) => {
             if (index < this.stateMelody.length - 1) {
@@ -128,16 +183,18 @@ export class InputControl {
             this.setEditedElement({ index: -1, target: undefined });
         }
 
-        if (e.key === "Spacebar" || e.key === " " && isLastInInput) {
+        if (e.key === "Spacebar" || e.key === " ") {
             e.preventDefault();
-            this.addNewElementAfter(index)
-            gotoNextIfAvailable(true);
+            this.addNewElementAfter(index, indexInInput ?? 0, target)
+            if (!isFirstInInput || isLastInInput) gotoNextIfAvailable(false);
+            else this.emptyInput(target, index)
         }
-
-        if (e.key === "-" && target === "text" && isLastInInput) {
+        
+        if (e.key === "-" && target === "text") {
             e.preventDefault();
-            this.addNewElementAfter(index, false);
-            gotoNextIfAvailable(true);
+            this.addNewElementAfter(index, indexInInput ?? 0, target, false);
+            if (!isFirstInInput || isLastInInput) gotoNextIfAvailable(false);
+            else this.emptyInput(target, index)
         }
 
         if (e.key === "ArrowLeft" && isFirstInInput) {
