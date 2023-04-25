@@ -21,6 +21,7 @@ The following input controls are available in Cantus:
 - Press the `-` key in a syllable, and you'll achieve the same functionality you would with a `Space` bar press, but with a dash between the new syllables.
 - Press `Ctrl`+`Space` to update the space between the current and next syllables, and jump to the next one.
 - Press `Ctrl`+`-`  to update the dash between the current and next syllables, and jump to the next one.
+- Press `Backspace` at the beginning of a syllable or a block of music to merge it with the previous one.
 - Press `Ctrl`+`Backspace` to delete the currently selected syllable.
 - Press `Enter` or `Esc` to exit the editing mode.
 
