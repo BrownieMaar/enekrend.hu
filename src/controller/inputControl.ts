@@ -12,7 +12,7 @@ export class InputControl {
         index: number;
         target: "text" | "melody" | undefined;
     }>>;
-    incipit: string;
+    uniqueId: string;
 
     constructor(
         stateMelody: MelodyWithText[],
@@ -25,13 +25,13 @@ export class InputControl {
             index: number;
             target: "text" | "melody" | undefined;
         }>>,
-        incipit: string,
+        uniqueId: string,
     ) {
         this.stateMelody = stateMelody;
         this.setStateMelody = setStateMelody;
         this.editedElement = editedElement;
         this.setEditedElement = setEditedElement;
-        this.incipit = incipit;
+        this.uniqueId = uniqueId;
     }
 
     handleMelodyUpdate = (index: number, target: "text" | "melody", value: string) => {
@@ -82,7 +82,7 @@ export class InputControl {
             if (index < this.stateMelody.length - 1) {
                 this.setEditedElement({ index: index + 1, target });
                 requestAnimationFrame(() => {
-                    const element = document.getElementById(`input-${target}-${this.incipit}-${index + 1}`);
+                    const element = document.getElementById(`input-${target}-${this.uniqueId}-${index + 1}`);
                     element?.focus();
                     if (element && element instanceof HTMLInputElement) {
                         element.selectionStart = 0;
@@ -101,7 +101,7 @@ export class InputControl {
             if (index > 0) {
                 this.setEditedElement({ index: index - 1, target });
                 requestAnimationFrame(() => {
-                    const element = document.getElementById(`input-${target}-${this.incipit}-${index - 1}`);
+                    const element = document.getElementById(`input-${target}-${this.uniqueId}-${index - 1}`);
                     element?.focus();
                     if (element && element instanceof HTMLInputElement) {
                         element.selectionStart = element.value.length;
@@ -150,14 +150,14 @@ export class InputControl {
         if (e.key === "ArrowDown" && target === "melody") {
             this.setEditedElement({ index: index, target: "text" });
             requestAnimationFrame(() => {
-                document.getElementById(`input-text-${this.incipit}-${index}`)?.focus();
+                document.getElementById(`input-text-${this.uniqueId}-${index}`)?.focus();
             })
         }
 
         if (e.key === "ArrowUp" && target === "text") {
             this.setEditedElement({ index: index, target: "melody" });
             requestAnimationFrame(() => {
-                document.getElementById(`input-melody-${this.incipit}-${index}`)?.focus();
+                document.getElementById(`input-melody-${this.uniqueId}-${index}`)?.focus();
             })
         }
 
@@ -190,7 +190,7 @@ export class InputControl {
         }
         this.setEditedElement({ index, target })
         requestAnimationFrame(() => {
-            document.getElementById(`input-${target}-${this.incipit}-${index}`)?.focus();
+            document.getElementById(`input-${target}-${this.uniqueId}-${index}`)?.focus();
         })
     }
 }
