@@ -46,12 +46,86 @@ export class InputControl {
         this.setStateMelody(newStateMelody);
     }
 
-    addNewElementAfter = (index: number, isSpaceAfter: boolean = true) => {
+    emptyInput = (target: "text" | "melody", index: number ) => {
+        requestAnimationFrame(() => {
+            const element = document.getElementById(`input-${target}-${this.uniqueId}-${index}`);
+            if (element && element instanceof HTMLInputElement) {
+                element.value = "";
+            }
+        });
+    }
+
+    gotoIndexInInput = (target: "text" | "melody", melodyIndex: number, indexToGoTo: number) => {
+        requestAnimationFrame(() => {
+            const element = document.getElementById(`input-${target}-${this.uniqueId}-${melodyIndex}`);
+            if (element && element instanceof HTMLInputElement) {
+                element.setSelectionRange(indexToGoTo, indexToGoTo);
+            }
+        });
+    }
+
+    addNewElementAfter = (melodyIndex: number, inputIndex: number, target: "text" | "melody", isSpaceAfter: boolean = true) => {
         const newStateMelody = [...this.stateMelody];
-        newStateMelody.splice(index + 1, 0, {
-            melody: "",
-            isSpaceAfter: isSpaceAfter,
-            text: "",
+        const isLast = target === "text" ? inputIndex === newStateMelody[melodyIndex].text.length : inputIndex === newStateMelody[melodyIndex].melody.length;
+        const isFirst = inputIndex === 0;
+        const [newMelodyWithTextA, newMelodyWithTextB] = isLast ? [
+            {
+                melody: newStateMelody[melodyIndex].melody,
+                isSpaceAfter: isSpaceAfter,
+                text: newStateMelody[melodyIndex].text,
+            },
+            {
+                melody: "",
+                isSpaceAfter: newStateMelody[melodyIndex].isSpaceAfter,
+                text: "",
+            }
+        ] : isFirst ? [
+            {
+                melody: "",
+                isSpaceAfter: isSpaceAfter,
+                text: "",
+            },
+            {
+                melody: newStateMelody[melodyIndex].melody,
+                isSpaceAfter: newStateMelody[melodyIndex].isSpaceAfter,
+                text: newStateMelody[melodyIndex].text,
+            }
+        ] : target === "text" ? [
+            {
+                melody: newStateMelody[melodyIndex].melody,
+                isSpaceAfter: isSpaceAfter,
+                text: newStateMelody[melodyIndex].text.slice(0, inputIndex),
+            },
+            {
+                melody: "",
+                isSpaceAfter: newStateMelody[melodyIndex].isSpaceAfter,
+                text: newStateMelody[melodyIndex].text.slice(inputIndex),
+            }
+        ] : [
+            {
+                melody: newStateMelody[melodyIndex].melody.slice(0, inputIndex),
+                isSpaceAfter: isSpaceAfter,
+                text: newStateMelody[melodyIndex].text,
+            },
+            {
+                melody: newStateMelody[melodyIndex].melody.slice(inputIndex),
+                isSpaceAfter: newStateMelody[melodyIndex].isSpaceAfter,
+                text: "",
+            }
+        ];
+
+        newStateMelody.splice(melodyIndex, 1, newMelodyWithTextA, newMelodyWithTextB);
+        this.setStateMelody(newStateMelody);
+    }
+
+    mergeWithPrevious = (melodyIndex: number) => {
+        const newStateMelody = [...this.stateMelody];
+        const previousMelody = newStateMelody[melodyIndex - 1];
+        const currentMelody = newStateMelody[melodyIndex];
+        newStateMelody.splice(melodyIndex - 1, 2, {
+            melody: previousMelody.melody + currentMelody.melody,
+            isSpaceAfter: currentMelody.isSpaceAfter,
+            text: previousMelody.text + currentMelody.text,
         });
         this.setStateMelody(newStateMelody);
     }
@@ -63,6 +137,7 @@ export class InputControl {
             newStateMelody[0].text = "";
             newStateMelody[0].isSpaceAfter = true;
             this.setStateMelody(newStateMelody);
+            if (this.editedElement.target) this.emptyInput(this.editedElement.target, 0);
         } else {
             newStateMelody.splice(index, 1);
             this.setStateMelody(newStateMelody);
@@ -75,8 +150,9 @@ export class InputControl {
 
     handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number, target: "text" | "melody") => {
 
-        const isLastInInput = e.currentTarget.selectionStart === e.currentTarget.value.length;
-        const isFirstInInput = e.currentTarget.selectionStart === 0;
+        const indexInInput = e.currentTarget.selectionStart;
+        const isLastInInput = indexInInput === e.currentTarget.value.length;
+        const isFirstInInput = indexInInput === 0;
 
         const gotoNextIfAvailable = (selectAll: boolean = false) => {
             if (index < this.stateMelody.length - 1) {
@@ -128,18 +204,35 @@ export class InputControl {
             this.setEditedElement({ index: -1, target: undefined });
         }
 
-        if (e.key === "Spacebar" || e.key === " " && isLastInInput) {
+        if (e.key === "Spacebar" || e.key === " ") {
             e.preventDefault();
-            if (target === "text") {
-                this.handleIsSpaceAfterUpdate(index, true);
+            if ((target === "text" && this.stateMelody[index + 1]?.melody !== "" && this.stateMelody[index + 1]?.text === "") || (target === "melody" && this.stateMelody[index + 1]?.text !== "" && this.stateMelody[index + 1]?.melody === "")) {
+                gotoNextIfAvailable()
+            } else {
+                this.addNewElementAfter(index, indexInInput ?? 0, target)
+                if (!isFirstInInput || isLastInInput) gotoNextIfAvailable();
+                else this.emptyInput(target, index)
             }
-            gotoNextIfAvailable(true);
+        }
+        
+        if (e.key === "-" && target === "text") {
+            e.preventDefault();
+            if (this.stateMelody[index + 1]?.melody !== "" && this.stateMelody[index + 1]?.text === "") {
+                this.handleIsSpaceAfterUpdate(index, false)
+                gotoNextIfAvailable()
+            } else {
+                this.addNewElementAfter(index, indexInInput ?? 0, target, false);
+                if (!isFirstInInput || isLastInInput) gotoNextIfAvailable();
+                else this.emptyInput(target, index)
+            }
         }
 
-        if (e.key === "-" && target === "text" && isLastInInput) {
+        if (e.key === "Backspace" && isFirstInInput && index > 0) {
             e.preventDefault();
-            this.handleIsSpaceAfterUpdate(index, false);
-            gotoNextIfAvailable(true);
+            const lengthOfPrevious = target === "text" ? this.stateMelody[index - 1].text.length : this.stateMelody[index - 1].melody.length;
+            this.mergeWithPrevious(index);
+            gotoPreviousIfAvailable();
+            this.gotoIndexInInput(target, index - 1, lengthOfPrevious);
         }
 
         if (e.key === "ArrowLeft" && isFirstInInput) {
@@ -163,31 +256,24 @@ export class InputControl {
             })
         }
 
-        if (e.ctrlKey || (index === this.stateMelody.length - 2 && isLastInInput)) { // TODO: fix ability to add last element and focus it
+        if (e.ctrlKey) { // TODO: fix ability to add last element and focus it
             if (e.key === " " || e.key === "Spacebar") {
                 e.preventDefault();
-                this.addNewElementAfter(index);
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        document.getElementById(`input-melody-${this.uniqueId}-${index + 1}`)?.focus();
-                    })
-                });
+                this.handleIsSpaceAfterUpdate(index, true);
+                gotoNextIfAvailable();
             }
             if (e.key === "-") {
                 e.preventDefault();
-                this.addNewElementAfter(index, target === "text");
+                this.handleIsSpaceAfterUpdate(index, false);
+                gotoNextIfAvailable();
+            }
+            if (e.key === "Backspace") {
+                e.preventDefault();
+                this.deleteCurrentElement(index);
                 requestAnimationFrame(() => {
-                    gotoNextIfAvailable();
+                    gotoPreviousIfAvailable()
                 })
             }
-        }
-        if (e.key === "Backspace" && e.ctrlKey) {
-            e.preventDefault();
-            this.deleteCurrentElement(index);
-            requestAnimationFrame(() => {
-                gotoPreviousIfAvailable()
-            })
-
         }
 
     }
