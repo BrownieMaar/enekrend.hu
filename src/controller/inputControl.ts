@@ -59,7 +59,6 @@ export class InputControl {
         requestAnimationFrame(() => {
             const element = document.getElementById(`input-${target}-${this.uniqueId}-${melodyIndex}`);
             if (element && element instanceof HTMLInputElement) {
-                element.focus();
                 element.setSelectionRange(indexToGoTo, indexToGoTo);
             }
         });
@@ -221,9 +220,10 @@ export class InputControl {
 
         if (e.key === "Backspace" && isFirstInInput && index > 0) {
             e.preventDefault();
+            const lengthOfPrevious = target === "text" ? this.stateMelody[index - 1].text.length : this.stateMelody[index - 1].melody.length;
             this.mergeWithPrevious(index);
             gotoPreviousIfAvailable();
-            // this.gotoIndexInInput TODO: finish this
+            this.gotoIndexInInput(target, index - 1, lengthOfPrevious);
         }
 
         if (e.key === "ArrowLeft" && isFirstInInput) {
