@@ -17,10 +17,10 @@ The following input controls are available in Cantus:
 - Use the `Home` and `End` keys to jump to the beginning and the end of the line.
 
 ### Syllable editing
-- Press the `Space` bar at the end of a syllable or block of music to add a new, empty syllable.
-- Press the `-` key at the end of a syllable to add a new, empty syllable with a dash between the syllables.
-- Press `Ctrl`+`Space` at the end of a syllable to update the space between the current and next syllables, and jump to the next one.
-- Press `Ctrl`+`-` at the end of a syllable to update the dash between the current and next syllables, and jump to the next one.
+- Press the `Space` bar in a syllable or block of music to split the current syllable into two. If you press it at the end of a syllable or music block, the new syllable and music will be empty. If you press it in the middle of a music block, the music block will be split in half, and the new music block will have no text. If you press it in the middle of a syllable, the syllable will be split there, and the new syllable will have no music. If you press it at the beggining of a syllable or a music block, a new empty syllable with empty music will be added before the current syllable.
+- Press the `-` key in a syllable, and you'll achieve the same functionality you would with a `Space` bar press, but with a dash between the new syllables.
+- Press `Ctrl`+`Space` to update the space between the current and next syllables, and jump to the next one.
+- Press `Ctrl`+`-`  to update the dash between the current and next syllables, and jump to the next one.
 - Press `Ctrl`+`Backspace` to delete the currently selected syllable.
 - Press `Enter` or `Esc` to exit the editing mode.
 
