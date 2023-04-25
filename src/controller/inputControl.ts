@@ -130,15 +130,13 @@ export class InputControl {
 
         if (e.key === "Spacebar" || e.key === " " && isLastInInput) {
             e.preventDefault();
-            if (target === "text") {
-                this.handleIsSpaceAfterUpdate(index, true);
-            }
+            this.addNewElementAfter(index)
             gotoNextIfAvailable(true);
         }
 
         if (e.key === "-" && target === "text" && isLastInInput) {
             e.preventDefault();
-            this.handleIsSpaceAfterUpdate(index, false);
+            this.addNewElementAfter(index, false);
             gotoNextIfAvailable(true);
         }
 
@@ -163,31 +161,24 @@ export class InputControl {
             })
         }
 
-        if (e.ctrlKey || (index === this.stateMelody.length - 2 && isLastInInput)) { // TODO: fix ability to add last element and focus it
+        if (e.ctrlKey) { // TODO: fix ability to add last element and focus it
             if (e.key === " " || e.key === "Spacebar") {
                 e.preventDefault();
-                this.addNewElementAfter(index);
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        document.getElementById(`input-melody-${this.incipit}-${index + 1}`)?.focus();
-                    })
-                });
+                this.handleIsSpaceAfterUpdate(index, true);
+                gotoNextIfAvailable();
             }
             if (e.key === "-") {
                 e.preventDefault();
-                this.addNewElementAfter(index, target === "text");
+                this.handleIsSpaceAfterUpdate(index, false);
+                gotoNextIfAvailable();
+            }
+            if (e.key === "Backspace") {
+                e.preventDefault();
+                this.deleteCurrentElement(index);
                 requestAnimationFrame(() => {
-                    gotoNextIfAvailable();
+                    gotoPreviousIfAvailable()
                 })
             }
-        }
-        if (e.key === "Backspace" && e.ctrlKey) {
-            e.preventDefault();
-            this.deleteCurrentElement(index);
-            requestAnimationFrame(() => {
-                gotoPreviousIfAvailable()
-            })
-
         }
 
     }
