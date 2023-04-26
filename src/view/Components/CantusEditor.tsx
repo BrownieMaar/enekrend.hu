@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Divider, FormControl, FormHelperText, FormLabel, Input, InputLabel, OutlinedInput, Stack, TextField, Tooltip, Typography } from "@mui/material"
+import { Autocomplete, Box, Button, Divider, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import { CantusImpl } from "../../controller/CantusRenderer"
 import { BibleBooksWithLabels, BibleQuote, CantusData, Genre, GenreOptionsWithLabels, Tone, ToneOptionsWithLabels } from "../../model/types/CantusTypes"
 import { useEffect, useState } from "react"

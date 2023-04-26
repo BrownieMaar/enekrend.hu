@@ -1,6 +1,5 @@
 import { FirebaseApp } from "firebase/app";
-import { Firestore, addDoc, collection, doc, getDocs, getFirestore, limit, onSnapshot, orderBy, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { Firestore, addDoc, collection, doc, getDocs, getFirestore, query, serverTimestamp, where } from "firebase/firestore";
 import { DatabaseInterface } from "./DatabaseInterface";
 import { AppUser } from "./types/UserTypes";
 import { User } from "firebase/auth";

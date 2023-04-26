@@ -3,7 +3,6 @@ import { CantusData } from "../../../model/types/CantusTypes";
 import CantusEditor from "../../Components/CantusEditor";
 import { DatabaseContext } from "../../App";
 import { useContext } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { UserContext } from "../../App";
 
 
