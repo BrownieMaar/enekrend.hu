@@ -4,12 +4,18 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import { DatabaseInterface } from "./DatabaseInterface";
 import { AppUser } from "./types/UserTypes";
 import { User } from "firebase/auth";
+import { CantusData } from "./types/CantusTypes";
 
 export class DatabaseFirestore implements DatabaseInterface {
     db: Firestore;
 
     constructor(app: FirebaseApp) {
         this.db = getFirestore(app);
+    }
+    addNewCantus(cantusData: CantusData, userId: string): Promise<boolean> {
+        console.log(userId)
+        console.log(cantusData)
+        throw new Error("Method not implemented.");
     }
 
     async getAppUserData(uid: string): Promise<AppUser> {
