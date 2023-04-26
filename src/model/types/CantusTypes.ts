@@ -24,20 +24,25 @@ export interface Cantus extends CantusData {
     Component({}: CantusComponentProps ): JSX.Element;
 }
 
-export type Genre = "Intr" |
-    "IntrV" |
-    "Gr" |
-    "GrV" |
-    "Tr" |
-    "All" |
-    "Seq" |
-    "Off" |
-    "OffV" |
-    "Comm" |
-    "Resp" |
-    "RespV" |
-    "Hymn" |
-    "Ant"
+export type Genre = typeof GenreOptionsWithLabels[number]["value"];
+
+export const GenreOptionsWithLabels = [
+    { value: "Intr", label: "Introitus" },
+    { value: "IntrV", label: "Introitus verse" },
+    { value: "Gr", label: "Graduale" },
+    { value: "GrV", label: "Graduale verse" },
+    { value: "Tr", label: "Tractus" },
+    { value: "All", label: "Alleluia" },
+    { value: "Seq", label: "Sequentia" },
+    { value: "Off", label: "Offertorium" },
+    { value: "OffV", label: "Offertorium verse" },
+    { value: "Comm", label: "Communio" },
+    { value: "Resp", label: "Responsorium" },
+    { value: "RespV", label: "Responsorium verse" },
+    { value: "Hymn", label: "Hymnus" },
+    { value: "Ant", label: "Antiphona" },
+] as const;
+
 
 export interface CantusComponentProps {
     width: number,
