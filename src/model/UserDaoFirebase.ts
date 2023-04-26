@@ -1,20 +1,14 @@
-import { FirebaseApp } from "firebase/app";
-import { Firestore, addDoc, collection, doc, getDocs, getFirestore, query, serverTimestamp, where } from "firebase/firestore";
-import { DatabaseInterface } from "./DatabaseInterface";
-import { AppUser } from "./types/UserTypes";
-import { User } from "firebase/auth";
-import { CantusData } from "./types/CantusTypes";
+import {FirebaseApp} from "firebase/app";
+import {addDoc, collection, Firestore, getDocs, getFirestore, query, serverTimestamp, where} from "firebase/firestore";
+import {UserDao} from "./UserDao";
+import {AppUser} from "./types/UserTypes";
+import {User} from "firebase/auth";
 
-export class DatabaseFirestore implements DatabaseInterface {
+export class UserDaoFirebase implements UserDao {
     db: Firestore;
 
     constructor(app: FirebaseApp) {
         this.db = getFirestore(app);
-    }
-    addNewCantus(cantusData: CantusData, userId: string): Promise<boolean> {
-        console.log(userId)
-        console.log(cantusData)
-        throw new Error("Method not implemented.");
     }
 
     async getAppUserData(uid: string): Promise<AppUser> {
