@@ -1,6 +1,6 @@
 import { Autocomplete, Box, Button, Divider, FormControl, FormHelperText, FormLabel, Input, InputLabel, OutlinedInput, Stack, TextField, Typography } from "@mui/material"
 import { CantusImpl } from "../../controller/CantusRenderer"
-import { BibleBooksWithLabels, BibleQuote, CantusData, GenreOptionsWithLabels, ToneOptionsWithLabels } from "../../model/types/CantusTypes"
+import { BibleBooksWithLabels, BibleQuote, CantusData, Genre, GenreOptionsWithLabels, Tone, ToneOptionsWithLabels } from "../../model/types/CantusTypes"
 import { useEffect, useState } from "react"
 
 interface CantusEditorProps {
@@ -13,6 +13,35 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
     const [cantus, setCantus] = useState(new CantusImpl(cantusData));
     const [melodyContainerWidth, setMelodyContainerWidth] = useState(document.getElementById("cantus-component-container")?.clientWidth ?? 200);
 
+    const updateCantus = {
+        genre: (genre?: Genre) => {
+            const newCantus = new CantusImpl(cantus.getCantusData());
+            newCantus.genre = genre;
+            setCantus(newCantus);
+        },
+        cantusId: (cantusId: string) => {
+            const newCantus = new CantusImpl(cantus.getCantusData());
+            newCantus.cantusId = cantusId;
+            setCantus(newCantus);
+        },
+        tone: (tone?: Tone) => {
+            const newCantus = new CantusImpl(cantus.getCantusData());
+            newCantus.tone = tone;
+            setCantus(newCantus);
+        },
+        notes: (notes: string) => {
+            const newCantus = new CantusImpl(cantus.getCantusData());
+            newCantus.notes = notes;
+            setCantus(newCantus);
+        },
+        bibleQuote: (index: number, bibleQuote: BibleQuote) => {
+            const newCantus = new CantusImpl(cantus.getCantusData());
+            if (!newCantus.bibleQuote) newCantus.bibleQuote = [];
+            newCantus.bibleQuote[index] = bibleQuote;
+            setCantus(newCantus);
+        },
+    }
+    
     useEffect(() => {
         const handleResize = () => {
             const width = document.getElementById("cantus-component-container")?.clientWidth;
@@ -40,6 +69,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
                 options={GenreOptionsWithLabels}
                 sx={{ minWidth: 200, flexGrow: 1 }}
                 renderInput={(params) => <TextField {...params} label="Genre" />}
+                onChange={(_e, newValue) => newValue?.value ? updateCantus.genre(newValue?.value) : updateCantus.genre(undefined)}
             />
             <TextField
                 label="Incipit"
@@ -55,6 +85,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
                 label="Cantus ID"
                 sx={{ minWidth: 200, flexGrow: 1 }}
                 value={cantus.cantusId}
+                onInput={(e) => updateCantus.cantusId((e.target as HTMLInputElement).value)}
             />
             <TextField
                 label="Source Book"
@@ -66,6 +97,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
                 options={ToneOptionsWithLabels}
                 sx={{ minWidth: 200, flexGrow: 1 }}
                 renderInput={(params) => <TextField {...params} label="Tone" />}
+                onChange={(_e, newValue) => newValue?.value ? updateCantus.tone(newValue?.value) : updateCantus.tone(undefined)}
             />
         </Stack>
         {
@@ -77,30 +109,35 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
                         options={BibleBooksWithLabels}
                         sx={{ minWidth: 200, flexGrow: 5 }}
                         renderInput={(params) => <TextField {...params} label="Book" />}
+                        onChange={(_e, newValue) => newValue && newValue.value ? updateCantus.bibleQuote(index, { ...bibleQuote, book: newValue.value }) : updateCantus.bibleQuote(index, { ...bibleQuote, book: undefined })}
                     />
                     <TextField
                         label="Start Chapter"
                         type="number"
                         sx={{ minWidth: 125, flexGrow: 1 }}
                         value={bibleQuote.startChapter}
+                        onInput={(e) => updateCantus.bibleQuote(index, { ...bibleQuote, startChapter: (e.target as HTMLInputElement).valueAsNumber || undefined })}
                     />
                     <TextField
                         label="Start Verse"
                         type="number"
                         sx={{ minWidth: 125, flexGrow: 1 }}
                         value={bibleQuote.startVerse}
+                        onInput={(e) => updateCantus.bibleQuote(index, { ...bibleQuote, startVerse: (e.target as HTMLInputElement).valueAsNumber || undefined })}
                     />
                     <TextField
                         label="End Chapter"
                         type="number"
                         sx={{ minWidth: 125, flexGrow: 1 }}
                         value={bibleQuote.endChapter}
+                        onInput={(e) => updateCantus.bibleQuote(index, { ...bibleQuote, endChapter: (e.target as HTMLInputElement).valueAsNumber || undefined })}
                     />
                     <TextField
                         label="End Verse"
                         type="number"
                         sx={{ minWidth: 125, flexGrow: 1 }}
                         value={bibleQuote.endVerse}
+                        onInput={(e) => updateCantus.bibleQuote(index, { ...bibleQuote, endVerse: (e.target as HTMLInputElement).valueAsNumber || undefined })}
                     />
                     <Button
                         onClick={(_e) => deleteBibleQuote(index)}
@@ -121,6 +158,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
             multiline
             rows={4}
             value={cantus.notes}
+            onInput={(e) => updateCantus.notes((e.target as HTMLInputElement).value)}
         />
         <Divider textAlign="left">Melody</Divider>
         <Box
