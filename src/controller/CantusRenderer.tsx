@@ -1,4 +1,4 @@
-import { Cantus, CantusComponentProps, CantusData, Clef, KeySignature, MelodyWithText, Tone, } from "../model/types/CantusTypes";
+import { BibleQuote, Cantus, CantusComponentProps, CantusData, Clef, Genre, KeySignature, MelodyWithText, Tone, } from "../model/types/CantusTypes";
 import { KeysAsGuido, getCharacterWidthInPixels, getKeyFromString, } from "./fontTools";
 import { InputControl } from "./inputControl";
 import { RendererTools } from "./rendererTools";
@@ -11,8 +11,10 @@ export class CantusImpl implements Cantus {
     uniqueId: string;
     codexSourceId?: string | undefined;
     contents: { signatures: { signature: KeySignature; position: number; }[]; melody: MelodyWithText[]; clef: Clef };
-    genre?: string | undefined;
+    genre?: Genre;
     tone?: Tone | undefined;
+    notes?: string;
+    bibleQuote?: BibleQuote[];
 
     constructor(sourceData?: MelodyWithText[] | CantusData) {
         if (sourceData) {
@@ -30,6 +32,8 @@ export class CantusImpl implements Cantus {
                 this.genre = sourceData.genre;
                 this.tone = sourceData.tone;
                 this.contents = sourceData.contents;
+                this.notes = sourceData.notes;
+                this.bibleQuote = sourceData.bibleQuote;
             }
         } else {
             this.uniqueId = uuidv4();
@@ -55,7 +59,9 @@ export class CantusImpl implements Cantus {
             codexSourceId: this.codexSourceId,
             contents: this.contents,
             genre: this.genre,
-            tone: this.tone
+            tone: this.tone,
+            notes: this.notes,
+            bibleQuote: this.bibleQuote,
         };
     }
 
