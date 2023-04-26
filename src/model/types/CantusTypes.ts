@@ -10,7 +10,7 @@ export interface CantusData {
         melody: MelodyWithText[],
         clef: Clef,
     };
-    genre?: string;
+    genre?: Genre;
     tone?: Tone;
 }
 
@@ -23,6 +23,20 @@ export interface Cantus extends CantusData {
     Component({}: CantusComponentProps ): JSX.Element;
 }
 
+export type Genre = "Intr" |
+    "IntrV" |
+    "Gr" |
+    "GrV" |
+    "Tr" |
+    "All" |
+    "Seq" |
+    "Off" |
+    "OffV" |
+    "Comm" |
+    "Resp" |
+    "RespV" |
+    "Hymn" |
+    "Ant"
 
 export interface CantusComponentProps {
     width: number,
@@ -33,7 +47,7 @@ export interface CantusComponentProps {
 }
 
 export interface AntiphonaOfficium extends Cantus {
-    genre: string;
+    genre: Genre;
     tone: Tone;
 }
 //These are te symbols that should be available as literals: >#&@{}
