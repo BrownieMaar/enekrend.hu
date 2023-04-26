@@ -12,6 +12,8 @@ import {CantusDaoFirebase} from "../model/CantusDaoFirebase";
 import {CantusDao} from "../model/CantusDao";
 import {LiturgyDao} from "../model/LiturgyDao";
 import {LiturgyDaoFirebase} from "../model/LiturgyDaoFirebase";
+import {CodexDaoFirebase} from "../model/CodexDaoFirebase";
+import {CodexDao} from "../model/CodexDao";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -35,6 +37,7 @@ const db = {
   user: new UserDaoFirebase(app) as UserDao,
   cantus: new CantusDaoFirebase(app) as CantusDao,
   liturgy: new LiturgyDaoFirebase(app) as LiturgyDao,
+  codex: new CodexDaoFirebase(app) as CodexDao,
 }
 
 const googlePopUpSignIn = async () => {
