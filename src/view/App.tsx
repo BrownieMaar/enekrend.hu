@@ -10,6 +10,8 @@ import {getAuth, GoogleAuthProvider, signInWithPopup, User} from "firebase/auth"
 import {useAuthState} from "react-firebase-hooks/auth";
 import {CantusDaoFirebase} from "../model/CantusDaoFirebase";
 import {CantusDao} from "../model/CantusDao";
+import {LiturgyDao} from "../model/LiturgyDao";
+import {LiturgyDaoFirebase} from "../model/LiturgyDaoFirebase";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -32,6 +34,7 @@ const provider = new GoogleAuthProvider();
 const db = {
   user: new UserDaoFirebase(app) as UserDao,
   cantus: new CantusDaoFirebase(app) as CantusDao,
+  liturgy: new LiturgyDaoFirebase(app) as LiturgyDao,
 }
 
 const googlePopUpSignIn = async () => {
