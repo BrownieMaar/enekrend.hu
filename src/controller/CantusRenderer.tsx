@@ -59,7 +59,9 @@ export class CantusImpl implements Cantus {
             codexSourceId: this.codexSourceId,
             contents: this.contents,
             genre: this.genre,
-            tone: this.tone
+            tone: this.tone,
+            notes: this.notes,
+            bibleQuote: this.bibleQuote,
         };
     }
 
