@@ -34,8 +34,15 @@ export class CantusImpl implements Cantus {
         } else {
             this.uniqueId = uuidv4();
             this.contents = {
-                signatures: [],
-                melody: [],
+                signatures: [{
+                    signature: "C",
+                    position: 0
+                }],
+                melody: [{
+                    melody: "",
+                    text: "",
+                    isSpaceAfter: true
+                }],
                 clef: "M"
             };
         }
