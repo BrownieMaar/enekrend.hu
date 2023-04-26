@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Box, Button, Divider, Drawer, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import { AppBar, Avatar, Box, Button, Container, Divider, Drawer, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Outlet, useNavigate } from "react-router-dom"
@@ -139,7 +139,9 @@ export default function Layout({ signIn, signOut }: { signIn: () => Promise<stri
         </AppBar>
 
         <Toolbar />
-        <Outlet />
+        <Container maxWidth={"xl"}>
+            <Outlet />
+        </Container>
 
     </>
 }
