@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Divider, FormControl, FormHelperText, FormLabel, Input, InputLabel, OutlinedInput, Stack, TextField, Typography } from "@mui/material"
+import { Autocomplete, Box, Button, Divider, FormControl, FormHelperText, FormLabel, Input, InputLabel, OutlinedInput, Stack, TextField, Tooltip, Typography } from "@mui/material"
 import { CantusImpl } from "../../controller/CantusRenderer"
 import { BibleBooksWithLabels, BibleQuote, CantusData, Genre, GenreOptionsWithLabels, Tone, ToneOptionsWithLabels } from "../../model/types/CantusTypes"
 import { useEffect, useState } from "react"
@@ -7,9 +7,10 @@ interface CantusEditorProps {
     onSave: (cantusData: CantusData) => void
     onCancel: () => void
     cantusData?: CantusData
+    loggedIn?: boolean
 }
 
-export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEditorProps) {
+export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }: CantusEditorProps) {
     const [cantus, setCantus] = useState(new CantusImpl(cantusData));
     const [melodyContainerWidth, setMelodyContainerWidth] = useState(document.getElementById("cantus-component-container")?.clientWidth ?? 200);
 
@@ -71,7 +72,11 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
             </Typography>
             <Stack direction="row" gap={2} flexGrow={1} >
                 <Button fullWidth size="large" variant="contained" onClick={() => onCancel()}>Cancel</Button>
-                <Button fullWidth size="large" variant="contained" color="success" onClick={() => onSave(cantus.getCantusData())}>Save</Button>
+                <Tooltip title={loggedIn ? "" : "You need to be logged in to save data."}>
+                    <Box sx={{width: "100%"}}>
+                        <Button fullWidth disabled={!loggedIn} size="large" variant="contained" color="success" onClick={() => onSave(cantus.getCantusData())}>Save</Button>
+                    </Box>
+                </Tooltip>
             </Stack>
         </Stack>
         <Stack direction="row" gap={2} flexWrap={"wrap"}>
