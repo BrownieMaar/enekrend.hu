@@ -76,13 +76,13 @@ export default function Layout({ signIn, signOut }: { signIn: () => Promise<stri
                         </MenuItem>
                     ))}
                 </Menu>
-                
+
                 <Typography
                     variant="h5"
                     noWrap
                     mr={2}
                     flexGrow={0}
-                    sx={{display: { xs: 'none', md: 'flex' }}}
+                    sx={{ display: { xs: 'none', md: 'flex' } }}
                 >
                     {"enekrend.hu".toUpperCase()}
                 </Typography>
@@ -91,7 +91,7 @@ export default function Layout({ signIn, signOut }: { signIn: () => Promise<stri
                     noWrap
                     mr={2}
                     flexGrow={1}
-                    sx={{display: { xs: 'flex', md: 'none' },}}
+                    sx={{ display: { xs: 'flex', md: 'none' }, }}
                 >
                     {"enekrend.hu".toUpperCase()}
                 </Typography>
@@ -101,7 +101,7 @@ export default function Layout({ signIn, signOut }: { signIn: () => Promise<stri
                         flexGrow: 1,
 
                     }}
-                    >
+                >
 
                     {mainPages.map((page) => (
                         <Button key={page.name} color="inherit" onClick={() => { navigate(page.path) }}>
@@ -134,12 +134,12 @@ export default function Layout({ signIn, signOut }: { signIn: () => Promise<stri
 
                     </Menu>
                 </Box>
-                    : <Button color="inherit" onClick={handleSignIn} sx={{flexGrow: 0}}>Login</Button>}
+                    : <Button color="inherit" onClick={handleSignIn} sx={{ flexGrow: 0 }}>Login</Button>}
             </Toolbar>
         </AppBar>
 
         <Toolbar />
-            <Outlet />
+        <Outlet />
 
     </>
 }
