@@ -12,6 +12,7 @@ export interface CantusData {
     };
     genre?: Genre;
     tone?: Tone;
+    notes?: string;
 }
 
 
