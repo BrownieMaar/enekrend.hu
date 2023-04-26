@@ -3,18 +3,12 @@ import {addDoc, collection, Firestore, getDocs, getFirestore, query, serverTimes
 import {UserDao} from "./UserDao";
 import {AppUser} from "./types/UserTypes";
 import {User} from "firebase/auth";
-import {CantusData} from "./types/CantusTypes";
 
 export class UserDaoFirebase implements UserDao {
     db: Firestore;
 
     constructor(app: FirebaseApp) {
         this.db = getFirestore(app);
-    }
-    addNewCantus(cantusData: CantusData, userId: string): Promise<boolean> {
-        console.log(userId)
-        console.log(cantusData)
-        throw new Error("Method not implemented.");
     }
 
     async getAppUserData(uid: string): Promise<AppUser> {
