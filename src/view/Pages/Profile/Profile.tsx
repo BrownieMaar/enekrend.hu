@@ -1,12 +1,10 @@
-import { useParams } from "react-router-dom"
-import { useState } from "react"
-import { AppUser } from "../../../model/types/UserTypes";
-import { DatabaseContext } from "../../App";
-import { useEffect, useContext } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
-import { Avatar, Box, Card, Divider, Paper, Skeleton, Stack } from "@mui/material";
+import {useParams} from "react-router-dom"
+import {useContext, useEffect, useState} from "react"
+import {AppUser} from "../../../model/types/UserTypes";
+import {DatabaseContext} from "../../App";
+import {Avatar, Box, Card, Divider, Skeleton, Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { setWindowTitle } from "../routes";
+import {setWindowTitle} from "../routes";
 
 function ProfileCard({ appUser }: { appUser: AppUser | undefined }) {
     return <Card sx={{ width: "min-content", p: 4, m: "auto", mt: 2 }}>
@@ -46,7 +44,7 @@ export default function Profile() {
 
     useEffect(() => {
         if (uid === undefined) return;
-        db.getAppUserData(uid).then(user => {
+        db.user.getAppUserData(uid).then(user => {
             setAppUser(user)
             setWindowTitle("Profile - " + user.displayName ?? "User")
         });

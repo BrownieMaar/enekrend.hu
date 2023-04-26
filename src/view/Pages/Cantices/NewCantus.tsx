@@ -13,7 +13,7 @@ export default function NewCantus() {
     
     const onSave = (cantus: CantusData) => {
         if (!user) return
-        db.addNewCantus(cantus, user.uid).then(() => navigate(-1))
+        db.cantus.addNewCantus(cantus, user.uid).then(() => navigate(-1))
     }
     const onCancel = () => navigate(-1)
 

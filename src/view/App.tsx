@@ -8,6 +8,8 @@ import Layout from "./Pages/Layout";
 import {ROUTES} from "./Pages/routes";
 import {getAuth, GoogleAuthProvider, signInWithPopup, User} from "firebase/auth";
 import {useAuthState} from "react-firebase-hooks/auth";
+import {CantusDaoFirebase} from "../model/CantusDaoFirebase";
+import {CantusDao} from "../model/CantusDao";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -27,13 +29,16 @@ const app = initializeApp(firebaseConfig);
 
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
-const db: UserDaoFirebase = new UserDaoFirebase(app)
+const db = {
+  user: new UserDaoFirebase(app) as UserDao,
+  cantus: new CantusDaoFirebase(app) as CantusDao,
+}
 
 const googlePopUpSignIn = async () => {
   const res = await signInWithPopup(auth, provider)
 
   try {
-    if (await db.AddUser(res.user)) {
+    if (await db.user.AddUser(res.user)) {
       console.log("User added to database")
     }
   } catch (error) {
@@ -44,8 +49,7 @@ const googlePopUpSignIn = async () => {
 }
 const signOut = () => auth.signOut()
 
-
-export const DatabaseContext = createContext<UserDao>(db)
+export const DatabaseContext = createContext<typeof db>(db)
 export const UserContext = createContext<User | null | undefined>(null)
 
 
