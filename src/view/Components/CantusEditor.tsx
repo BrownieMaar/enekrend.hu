@@ -41,7 +41,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
             setCantus(newCantus);
         },
     }
-    
+
     useEffect(() => {
         const handleResize = () => {
             const width = document.getElementById("cantus-component-container")?.clientWidth;
@@ -52,7 +52,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
         return () => window.removeEventListener("resize", handleResize);
     }, [])
 
-    
+
     const deleteBibleQuote = (index: number) => {
         const newCantus = new CantusImpl(cantus.getCantusData());
         if (!newCantus.bibleQuote) return
@@ -61,8 +61,19 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
     }
 
 
-    return <Stack gap={3}>
-        <Typography variant="h4">{cantus.genre ? cantus.genre + ". " : ""}{cantus.getIncipit()}</Typography>
+    return <Stack gap={3} marginTop={2}>
+        <Stack direction="row" gap={2} flexWrap={"wrap"}>
+            <Typography variant="h4" sx={{ minWidth: "fit-content", flexGrow: 10 }}>
+                {cantus.getIncipit().trim().length === 0 ? <em>[New Cantus]</em>
+                    :
+                    <>{cantus.genre ? cantus.genre + ". " : ""}{cantus.getIncipit()}</>
+                }
+            </Typography>
+            <Stack direction="row" gap={2} flexGrow={1} >
+                <Button fullWidth size="large" variant="contained" onClick={() => onCancel()}>Cancel</Button>
+                <Button fullWidth size="large" variant="contained" color="success" onClick={() => onSave(cantus.getCantusData())}>Save</Button>
+            </Stack>
+        </Stack>
         <Stack direction="row" gap={2} flexWrap={"wrap"}>
             <Autocomplete
                 disablePortal
@@ -173,7 +184,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData }: CantusEdi
             }}
             id="cantus-component-container"
         >
-            {cantus.Component({width: melodyContainerWidth - 30, editable: true})}
+            {cantus.Component({ width: melodyContainerWidth - 30, editable: true })}
         </Box>
     </Stack>
 }
