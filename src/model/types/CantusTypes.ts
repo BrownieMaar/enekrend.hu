@@ -26,11 +26,11 @@ export interface CantusData {
 
 
 export interface BibleQuote {
-    book: typeof BibleBooksWithLabels[number]["value"];
-    startChapter: number;
-    startVerse: number;
-    endChapter: number;
-    endVerse: number;
+    book?: typeof BibleBooksWithLabels[number]["value"];
+    startChapter?: number;
+    startVerse?: number;
+    endChapter?: number;
+    endVerse?: number;
 }
 
 export const BibleBooksWithLabels = [
