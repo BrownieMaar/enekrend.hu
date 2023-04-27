@@ -53,16 +53,17 @@ export class CantusImpl implements Cantus {
     }
 
     getCantusData(): CantusData {
-        return {
-            cantusId: this.cantusId,
+        const returnObj: CantusData = {
             uniqueId: this.uniqueId,
-            codexSourceId: this.codexSourceId,
             contents: this.contents,
-            genre: this.genre,
-            tone: this.tone,
-            notes: this.notes,
-            bibleQuote: this.bibleQuote,
-        };
+        }
+        if (this.cantusId) returnObj.cantusId = this.cantusId;
+        if (this.codexSourceId) returnObj.codexSourceId = this.codexSourceId;
+        if (this.genre) returnObj.genre = this.genre;
+        if (this.tone) returnObj.tone = this.tone;
+        if (this.notes) returnObj.notes = this.notes;
+        if (this.bibleQuote) returnObj.bibleQuote = this.bibleQuote;
+        return returnObj;
     }
 
 
