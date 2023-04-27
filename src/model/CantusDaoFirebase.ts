@@ -1,6 +1,6 @@
 import {CantusDao} from "./CantusDao";
 import {CantusData} from "./types/CantusTypes";
-import {addDoc, collection, doc, Firestore, getDoc, getFirestore, serverTimestamp} from "firebase/firestore";
+import {addDoc, collection, doc, Firestore, getDoc, getDocs, getFirestore, serverTimestamp} from "firebase/firestore";
 import {FirebaseApp} from "firebase/app";
 import {CantusDto} from "./types/Dto";
 
@@ -41,8 +41,22 @@ export class CantusDaoFirebase implements CantusDao {
 
     }
 
-    getCanticesWithUserIdAndTimestamp(): Promise<CantusDto[]> {
-        return Promise.resolve([]);
+    async getCanticesWithUserIdAndTimestamp(): Promise<CantusDto[]> {
+        const cantusRef = collection(this.db, "cantus");
+
+        const returnArray: CantusDto[] = [];
+        const querySnapshot = await getDocs(cantusRef);
+        querySnapshot.forEach((doc) => {
+            returnArray.push({
+                docId: doc.id,
+                userId: doc.data().userId,
+                created: doc.data().created.toDate(),
+                cantusData: doc.data().cantusData,
+            });
+        });
+
+        return returnArray;
+
     }
 
 
