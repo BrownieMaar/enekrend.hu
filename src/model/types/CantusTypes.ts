@@ -3,7 +3,6 @@ export interface Cantus extends CantusData {
     getMusicScript(): string;
     getCantusData(): CantusData;
     getIncipit(): string;
-    Component({ }: CantusComponentProps): JSX.Element;
 }
 
 export interface CantusData {

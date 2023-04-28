@@ -1,5 +1,5 @@
-import { Cantus, KeySignature, MelodyWithText, SheetType } from "../model/types/CantusTypes";
-import { CantusImpl } from "./CantusRenderer";
+import {Cantus, KeySignature} from "../model/types/CantusTypes";
+import {CantusImpl} from "./CantusImpl";
 
 export function getCharacterWidthInPixels(
     character: string,
