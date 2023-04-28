@@ -1,7 +1,16 @@
-import { Autocomplete, Box, Button, Divider, Stack, TextField, Tooltip, Typography } from "@mui/material"
-import { CantusImpl } from "../../controller/CantusRenderer"
-import { BibleBooksWithLabels, BibleQuote, CantusData, Genre, GenreOptionsWithLabels, Tone, ToneOptionsWithLabels } from "../../model/types/CantusTypes"
-import { useEffect, useState } from "react"
+import {Autocomplete, Box, Button, Divider, Stack, TextField, Tooltip, Typography} from "@mui/material"
+import {
+    BibleBooksWithLabels,
+    BibleQuote,
+    CantusData,
+    Genre,
+    GenreOptionsWithLabels,
+    Tone,
+    ToneOptionsWithLabels
+} from "../../model/types/CantusTypes"
+import {useEffect, useState} from "react"
+import {CantusImpl} from "../../controller/CantusImpl";
+import {CantusRenderer} from "../../controller/CantusRenderer";
 
 interface CantusEditorProps {
     onSave: (cantusData: CantusData) => void
@@ -189,7 +198,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
             }}
             id="cantus-component-container"
         >
-            {cantus.Component({ width: melodyContainerWidth - 30, editable: true })}
+            <CantusRenderer cantusData={cantus.getCantusData()} width={melodyContainerWidth - 30} editable />
         </Box>
     </Stack>
 }
