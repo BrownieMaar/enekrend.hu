@@ -35,7 +35,7 @@ export default function Cantices() {
                             {cantus.getIncipit()}
                         </Typography>
                         <div style={{userSelect: "none", border: "1px solid black", borderRadius: 10, padding: 10}}>
-                            <CantusRenderer cantusData={cantus.getCantusData()} width={elementWidth - 40} fontSize={15} maxLines={2} />
+                            <CantusRenderer cantus={cantus} width={elementWidth - 40} fontSize={15} maxLines={2} />
                         </div>
                     </Paper>
                 </Grid>

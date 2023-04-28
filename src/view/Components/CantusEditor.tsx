@@ -2,6 +2,7 @@ import {Autocomplete, Box, Button, Divider, Stack, TextField, Tooltip, Typograph
 import {
     BibleBooksWithLabels,
     BibleQuote,
+    Cantus,
     CantusData,
     Genre,
     GenreOptionsWithLabels,
@@ -20,7 +21,7 @@ interface CantusEditorProps {
 }
 
 export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }: CantusEditorProps) {
-    const [cantus, setCantus] = useState(new CantusImpl(cantusData));
+    const [cantus, setCantus] = useState<Cantus>(new CantusImpl(cantusData));
     const [melodyContainerWidth, setMelodyContainerWidth] = useState(document.getElementById("cantus-component-container")?.clientWidth ?? 200);
 
     const updateCantus = {
@@ -198,7 +199,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
             }}
             id="cantus-component-container"
         >
-            <CantusRenderer cantusData={cantus.getCantusData()} width={melodyContainerWidth - 30} editable />
+            <CantusRenderer cantus={cantus} setCantus={setCantus} width={melodyContainerWidth - 30} editable />
         </Box>
     </Stack>
 }
