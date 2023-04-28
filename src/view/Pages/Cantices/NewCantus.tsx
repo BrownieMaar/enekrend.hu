@@ -11,9 +11,17 @@ export default function NewCantus() {
     const db = useContext(DatabaseContext);
     const user = useContext(UserContext);
     
-    const onSave = (cantus: CantusData) => {
+    const onSave = async (cantus: CantusData) => {
         if (!user) return
-        db.cantus.addNewCantus(cantus, user.uid).then(() => navigate(-1))
+        try {
+            const docId = await db.cantus.addNewCantus(cantus, user.uid)
+            db.cantus.getCantusByDocId(docId).then(cantusDto => {
+                console.log(cantusDto)
+            })
+        }
+        catch (err) {
+            console.log(err)
+        }
     }
     const onCancel = () => navigate(-1)
 
