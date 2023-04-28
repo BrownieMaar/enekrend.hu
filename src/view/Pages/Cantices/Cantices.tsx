@@ -4,11 +4,13 @@ import {CantusDto} from "../../../model/types/Dto";
 import {DatabaseContext} from "../../App";
 import {CantusImpl} from "../../../controller/CantusImpl";
 import {CantusRenderer} from "../../../controller/CantusRenderer";
+import {useNavigate} from "react-router-dom";
 
 export default function Cantices() {
     const db = useContext(DatabaseContext);
     const [elementWidth, setElementWidth] = useState(document.getElementById("grid-item-0")?.clientWidth ?? 0);
     const [cantices, setCantices] = useState<CantusDto[] | undefined>(undefined)
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -30,7 +32,10 @@ export default function Cantices() {
         {cantices.map((cantusDto, i) => {
                 const cantus = new CantusImpl(cantusDto.cantusData);
                 return <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={i}>
-                    <Paper elevation={3} id={`grid-item-${i}`} style={{padding: 10, cursor: "pointer"}}>
+                    <Paper elevation={3} id={`grid-item-${i}`}
+                           style={{padding: 10, cursor: "pointer"}}
+                           onClick={(_e) => navigate("/cantus/" + cantusDto.docId)}
+                    >
                         <Typography variant="h5" style={{marginBottom: 10}}>
                             {cantus.getIncipit()}
                         </Typography>
