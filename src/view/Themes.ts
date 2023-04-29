@@ -1,7 +1,8 @@
-import { ThemeOptions } from '@mui/material/styles';
+import {ThemeOptions} from '@mui/material/styles';
 import {createTheme} from "@mui/material";
 
-const themeOptions: ThemeOptions = {
+
+const lightThemeOptions: ThemeOptions = {
     palette: {
         mode: 'light',
         primary: {
@@ -17,4 +18,21 @@ const themeOptions: ThemeOptions = {
     },
 };
 
-export const enekrendTheme = createTheme(themeOptions);
+const darkThemeOptions: ThemeOptions = {
+    palette: {
+        mode: 'dark',
+        primary: {
+            main: '#c32f2f',
+        },
+        secondary: {
+            main: '#ef6c00',
+        },
+        background: {
+            default: '#000000',
+            paper: '#201c1c',
+        },
+    },
+};
+
+export const enekrendThemeLight = createTheme(lightThemeOptions);
+export const enekrendThemeDark = createTheme(darkThemeOptions);

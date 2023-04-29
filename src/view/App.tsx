@@ -14,8 +14,8 @@ import {LiturgyDao} from "../model/LiturgyDao";
 import {LiturgyDaoFirebase} from "../model/LiturgyDaoFirebase";
 import {CodexDaoFirebase} from "../model/CodexDaoFirebase";
 import {CodexDao} from "../model/CodexDao";
-import {ThemeProvider} from "@mui/material";
-import {enekrendTheme} from "./Themes";
+import {ThemeProvider, useMediaQuery} from "@mui/material";
+import {enekrendThemeDark, enekrendThemeLight} from "./Themes";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
@@ -62,11 +62,12 @@ export const UserContext = createContext<User | null | undefined>(null)
 
 
 function App() {
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const [user] = useAuthState(auth)
 
     return <DatabaseContext.Provider value={db}>
         <UserContext.Provider value={user}>
-            <ThemeProvider theme={enekrendTheme}>
+            <ThemeProvider theme={prefersDarkMode ? enekrendThemeDark : enekrendThemeLight}>
                 <Router>
                     <Routes>
                         <Route element={<Layout signIn={googlePopUpSignIn} signOut={signOut}/>}>
