@@ -32,7 +32,7 @@ export default function CantusPage() {
             alert("No cantus loaded")
             return;
         }
-        db.cantus.addNewCantus(cantus.getCantusData(), user.uid).then(docId => {
+        db.cantus.addNewCantusVersion(cantus.getCantusData(), user.uid).then(docId => {
             db.cantus.getCantusById(docId).then(cantusDto => {
                 console.log(cantusDto)
                 navigate(-1)
