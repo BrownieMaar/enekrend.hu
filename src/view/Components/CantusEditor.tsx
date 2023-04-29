@@ -1,7 +1,17 @@
-import { Autocomplete, Box, Button, Divider, Stack, TextField, Tooltip, Typography } from "@mui/material"
-import { CantusImpl } from "../../controller/CantusRenderer"
-import { BibleBooksWithLabels, BibleQuote, CantusData, Genre, GenreOptionsWithLabels, Tone, ToneOptionsWithLabels } from "../../model/types/CantusTypes"
-import { useEffect, useState } from "react"
+import {Autocomplete, Box, Button, Divider, Stack, TextField, Tooltip, Typography} from "@mui/material"
+import {
+    BibleBooksWithLabels,
+    BibleQuote,
+    Cantus,
+    CantusData,
+    Genre,
+    GenreOptionsWithLabels,
+    Tone,
+    ToneOptionsWithLabels
+} from "../../model/types/CantusTypes"
+import {useEffect, useState} from "react"
+import {CantusImpl} from "../../controller/CantusImpl";
+import {CantusRenderer} from "../../controller/CantusRenderer";
 
 interface CantusEditorProps {
     onSave: (cantusData: CantusData) => void
@@ -11,7 +21,7 @@ interface CantusEditorProps {
 }
 
 export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }: CantusEditorProps) {
-    const [cantus, setCantus] = useState(new CantusImpl(cantusData));
+    const [cantus, setCantus] = useState<Cantus>(new CantusImpl(cantusData));
     const [melodyContainerWidth, setMelodyContainerWidth] = useState(document.getElementById("cantus-component-container")?.clientWidth ?? 200);
 
     const updateCantus = {
@@ -83,6 +93,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
             <Autocomplete
                 disablePortal
                 options={GenreOptionsWithLabels}
+                defaultValue={cantus.genre ? GenreOptionsWithLabels.find((genre) => genre.value === cantus.genre) : undefined}
                 sx={{ minWidth: 200, flexGrow: 1 }}
                 renderInput={(params) => <TextField {...params} label="Genre" />}
                 onChange={(_e, newValue) => newValue?.value ? updateCantus.genre(newValue?.value) : updateCantus.genre(undefined)}
@@ -101,6 +112,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
                 label="Cantus ID"
                 sx={{ minWidth: 200, flexGrow: 1 }}
                 value={cantus.cantusId}
+                defaultValue={cantus.cantusId}
                 onInput={(e) => updateCantus.cantusId((e.target as HTMLInputElement).value)}
             />
             <TextField
@@ -112,6 +124,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
                 disablePortal
                 options={ToneOptionsWithLabels}
                 sx={{ minWidth: 200, flexGrow: 1 }}
+                defaultValue={cantus.tone ? ToneOptionsWithLabels.find((tone) => tone.value === cantus.tone) : undefined}
                 renderInput={(params) => <TextField {...params} label="Tone" />}
                 onChange={(_e, newValue) => newValue?.value ? updateCantus.tone(newValue?.value) : updateCantus.tone(undefined)}
             />
@@ -124,6 +137,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
                         disablePortal
                         options={BibleBooksWithLabels}
                         sx={{ minWidth: 200, flexGrow: 5 }}
+                        defaultValue={bibleQuote.book ? BibleBooksWithLabels.find((book) => book.value === bibleQuote.book) : undefined}
                         renderInput={(params) => <TextField {...params} label="Book" />}
                         onChange={(_e, newValue) => newValue && newValue.value ? updateCantus.bibleQuote(index, { ...bibleQuote, book: newValue.value }) : updateCantus.bibleQuote(index, { ...bibleQuote, book: undefined })}
                     />
@@ -174,6 +188,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
             multiline
             rows={4}
             value={cantus.notes}
+            defaultValue={cantus.notes}
             onInput={(e) => updateCantus.notes((e.target as HTMLInputElement).value)}
         />
         <Divider textAlign="left">Melody</Divider>
@@ -189,7 +204,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
             }}
             id="cantus-component-container"
         >
-            {cantus.Component({ width: melodyContainerWidth - 30, editable: true })}
+            <CantusRenderer cantus={cantus} setCantus={setCantus} width={melodyContainerWidth - 30} editable />
         </Box>
     </Stack>
 }

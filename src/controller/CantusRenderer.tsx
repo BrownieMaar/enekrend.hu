@@ -1,90 +1,28 @@
-import { BibleQuote, Cantus, CantusComponentProps, CantusData, Clef, Genre, KeySignature, MelodyWithText, Tone, } from "../model/types/CantusTypes";
-import { KeysAsGuido, getCharacterWidthInPixels, getKeyFromString, } from "./fontTools";
-import { InputControl } from "./inputControl";
-import { RendererTools } from "./rendererTools";
-import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import {Cantus, CantusComponentProps, MelodyWithText,} from "../model/types/CantusTypes";
+import {getCharacterWidthInPixels, KeysAsGuido,} from "./fontTools";
+import {InputControl} from "./inputControl";
+import {RendererTools} from "./rendererTools";
+import React, {useState} from "react";
+import {CantusImpl} from "./CantusImpl";
 
 
-export class CantusImpl implements Cantus {
-    cantusId?: string | undefined;
-    uniqueId: string;
-    codexSourceId?: string | undefined;
-    contents: { signatures: { signature: KeySignature; position: number; }[]; melody: MelodyWithText[]; clef: Clef };
-    genre?: Genre;
-    tone?: Tone | undefined;
-    notes?: string;
-    bibleQuote?: BibleQuote[];
-
-    constructor(sourceData?: MelodyWithText[] | CantusData) {
-        if (sourceData) {
-            if (Array.isArray(sourceData)) {
-                this.uniqueId = uuidv4();
-                this.contents = {
-                    signatures: [{ signature: getKeyFromString(sourceData[0].melody.substring(1)), position: 0 }],
-                    melody: sourceData.slice(1),
-                    clef: sourceData[0].melody[0] as Clef
-                };
-            } else {
-                this.cantusId = sourceData.cantusId;
-                this.uniqueId = sourceData.uniqueId;
-                this.codexSourceId = sourceData.codexSourceId;
-                this.genre = sourceData.genre;
-                this.tone = sourceData.tone;
-                this.contents = sourceData.contents;
-                this.notes = sourceData.notes;
-                this.bibleQuote = sourceData.bibleQuote;
-            }
-        } else {
-            this.uniqueId = uuidv4();
-            this.contents = {
-                signatures: [{
-                    signature: "C",
-                    position: 0
-                }],
-                melody: [{
-                    melody: "",
-                    text: "",
-                    isSpaceAfter: true
-                }],
-                clef: "M"
-            };
-        }
-    }
-
-    getCantusData(): CantusData {
-        return {
-            cantusId: this.cantusId,
-            uniqueId: this.uniqueId,
-            codexSourceId: this.codexSourceId,
-            contents: this.contents,
-            genre: this.genre,
-            tone: this.tone,
-            notes: this.notes,
-            bibleQuote: this.bibleQuote,
-        };
-    }
-
-
-    getText(): string {
-        return this.contents.melody.map(melodyWithText => melodyWithText.text + (melodyWithText.isSpaceAfter ? " " : "")).join("");
-    }
-
-    getIncipit(): string {
-        return this.getText().split(" ").slice(0, 3).join(" ")
-    }
-
-    getMusicScript(): string {
-        throw new Error("Method not implemented.");
-    }
-
-    Component({ width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20, maxLines }: CantusComponentProps): JSX.Element {
-        const [stateMelody, setStateMelody] = useState([...this.contents.melody]);
+export function CantusRenderer(
+        { width: parentWidthPx, sheetType = "ELTE", editable = false, fontSize = 20, maxLines, cantus, setCantus }: CantusComponentProps & {cantus: Cantus, setCantus?:  React.Dispatch<React.SetStateAction<Cantus>>}
+    ): JSX.Element {
+        const [stateMelody, setStateMelody] = useState([...cantus.contents.melody]);
         const [editedElement, setEditedElement] = useState<{ index: number, target: "text" | "melody" | undefined }>({ index: -1, target: undefined });
 
+        const setCantusMelody = (value: MelodyWithText[]) => {
+            if (!setCantus) {
+                alert("You shouldn't be able to do this. Are you sure you haven't added an editable prop by accident somewhere?")
+                return;
+            }
+            const newCantus: Cantus = new CantusImpl(cantus.getCantusData());
+            newCantus.contents.melody = value;
+            setCantus(newCantus);
+        }
 
-
-        const inputControl = new InputControl(stateMelody, (value) => { setStateMelody(value); this.contents.melody = value; }, editedElement, setEditedElement, this.uniqueId,)
+        const inputControl = new InputControl(stateMelody, (value) => { setStateMelody(value); setCantusMelody(value) }, editedElement, setEditedElement, cantus.uniqueId,)
 
 
         const GUIDO_FONTSIZE = fontSize * 2;
@@ -94,10 +32,10 @@ export class CantusImpl implements Cantus {
 
 
         const getLineStarting = (_elementIndex: number) => {
-            return this.contents.clef + KeysAsGuido[this.contents.signatures[0].signature] + "-"
+            return cantus.contents.clef + KeysAsGuido[cantus.contents.signatures[0].signature] + "-"
         }
 
-        const { music, text, lineLength, lines, savedLineLengths } = this.contents.melody
+        const { music, text, lineLength, lines, savedLineLengths } = cantus.contents.melody
             .reduce((acc: {
                 music: JSX.Element[];
                 text: JSX.Element[];
@@ -164,38 +102,38 @@ export class CantusImpl implements Cantus {
 
 
                 const returnMusic = [
-                    <span key={`${this.uniqueId} music span before ${i}`}>{renderTools.getWhiteSpaceCharsBefore(currentInfo)}</span>,
+                    <span key={`${cantus.uniqueId} music span before ${i}`}>{renderTools.getWhiteSpaceCharsBefore(currentInfo)}</span>,
                     isElementEdited("melody") && editable
                         ? <input
-                            id={`input-melody-${this.uniqueId}-${i}`}
+                            id={`input-melody-${cantus.uniqueId}-${i}`}
                             className="inline-input"
                             type="text"
-                            key={`${this.uniqueId} music input for ${i}`}
+                            key={`${cantus.uniqueId} music input for ${i}`}
                             defaultValue={currentInfo.actualMelody}
                             style={{ width: currentInfo.melodyWidth, textAlign: "center", fontSize: GUIDO_FONTSIZE, fontFamily: GUIDO_FONT }}
                             onInput={(e) => inputControl.handleInput(e, i, "melody")}
                             onBlur={(_e) => setEditedElement({ index: -1, target: undefined })}
                             onKeyDown={(e) => inputControl.handleInputKeyDown(e, i, "melody")}
                         />
-                        : <span key={`${this.uniqueId} music span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "melody")}>{currentInfo.actualMelody}</span>,
-                    <span key={`${this.uniqueId} music span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "melody")}>{renderTools.getWhiteSpaceCharsAfter(curr.isSpaceAfter, currentInfo, nextInfo)}</span>
+                        : <span key={`${cantus.uniqueId} music span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "melody")}>{currentInfo.actualMelody}</span>,
+                    <span key={`${cantus.uniqueId} music span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "melody")}>{renderTools.getWhiteSpaceCharsAfter(curr.isSpaceAfter, currentInfo, nextInfo)}</span>
                 ];
                 const returnTextSpans = [
-                    <SpacedSpan width={beforeWhiteSpaceWidth} key={`${this.uniqueId} text span before ${i}`} />,
+                    <SpacedSpan width={beforeWhiteSpaceWidth} key={`${cantus.uniqueId} text span before ${i}`} />,
                     isElementEdited("text") && editable
                         ? <input
-                            id={`input-text-${this.uniqueId}-${i}`}
+                            id={`input-text-${cantus.uniqueId}-${i}`}
                             className="inline-input"
                             type="text"
-                            key={`${this.uniqueId} text input for ${i}`}
+                            key={`${cantus.uniqueId} text input for ${i}`}
                             defaultValue={curr.text}
                             style={{ width: currentInfo.textWidth, fontSize: TEXT_FONTSIZE, fontFamily: TEXT_FONT }}
                             onInput={(e) => inputControl.handleInput(e, i, "text")}
                             onBlur={(_e) => setEditedElement({ index: -1, target: undefined })}
                             onKeyDown={(e) => inputControl.handleInputKeyDown(e, i, "text")}
                         />
-                        : <span key={`${this.uniqueId} text span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")}>{currentInfo.isFirst ? <><em>{curr.text[0]}</em>{curr.text.slice(1)}</> : <>{curr.text}</>}</span>,
-                    <SpacedSpan key={`${this.uniqueId} text span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")} width={afterWhiteSpaceWidth} >{textSeparator}</SpacedSpan>
+                        : <span key={`${cantus.uniqueId} text span ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")}>{currentInfo.isFirst ? <><em>{curr.text[0]}</em>{curr.text.slice(1)}</> : <>{curr.text}</>}</span>,
+                    <SpacedSpan key={`${cantus.uniqueId} text span after ${i}`} onDoubleClick={(e) => inputControl.handleDoubleClick(e, i, "text")} width={afterWhiteSpaceWidth} >{textSeparator}</SpacedSpan>
                 ];
 
                 const currentMusicWidth = getCharacterWidthInPixels(renderTools.getWhiteSpaceCharsBefore(currentInfo) + currentInfo.actualMelody + renderTools.getWhiteSpaceCharsAfter(curr.isSpaceAfter, currentInfo, nextInfo), GUIDO_FONT, GUIDO_FONTSIZE)
@@ -282,14 +220,13 @@ export class CantusImpl implements Cantus {
 
         return <div style={{ overflow: "hidden" }} >
             {lines.slice(0, maxLines).map((line, i) => {
-                return <div className="line" key={`${this.uniqueId} line ${i + 1}`}>
+                return <div className="line" key={`${cantus.uniqueId} line ${i + 1}`}>
                     <div className="music" style={{ fontSize: fontSize * 2 }}>{line.music}</div>
                     <div className="musictext" style={{ fontSize: fontSize }}>{line.text}</div>
                 </div>
             })}
         </div>
     }
-}
 
 function SpacedSpan({ width, children, id, onDoubleClick }: { width?: number, children?: JSX.Element | string | string[], id?: string, onDoubleClick?: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void }) {
     return <span onDoubleClick={onDoubleClick} style={{ display: "inline-block", width: width }} id={id} >{children ?? ""}</span>
