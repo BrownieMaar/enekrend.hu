@@ -3,12 +3,16 @@ import {useContext, useEffect, useState} from "react";
 import {CantusData} from "../../../model/types/CantusTypes";
 import {DatabaseContext, UserContext} from "../../App";
 import CantusEditor from "../../Components/CantusEditor";
+import {Paper, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 export default function CantusPage() {
     const db = useContext(DatabaseContext);
     const user = useContext(UserContext);
-    const { id } = useParams();
+    const {id} = useParams();
     const [cantusData, setCantusData] = useState<CantusData | undefined>(undefined);
+    const [editing, setEditing] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -41,11 +45,30 @@ export default function CantusPage() {
         })
     }
     const onCancel = () => {
-        navigate(-1)
+        setEditing(false)
     }
 
     return cantusData
-        ? <CantusEditor onSave={onSave} onCancel={onCancel} cantusData={cantusData} loggedIn={!!user} />
+        ? <>
+            <Stack direction={"row"} spacing={2} justifyContent={"flex-end"} sx={{marginBlock: 2}}>
+                <ToggleButtonGroup size={"small"} value={editing} color={"primary"}>
+                    <ToggleButton  value={false} onClick={() => setEditing(false)}>
+                        <VisibilityIcon fontSize={"small"}/>
+                    </ToggleButton>
+                    <ToggleButton  value={true} onClick={() => setEditing(true)}>
+                        <ModeEditIcon fontSize={"small"}/>
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </Stack>
+            {
+                editing
+                    ?
+                    <Paper sx={{padding: 4}}>
+                        <CantusEditor onSave={onSave} onCancel={onCancel} cantusData={cantusData} loggedIn={!!user}/>
+                    </Paper>
+                    : <div>{JSON.stringify(cantusData)}</div>
+            }
+        </>
         : <div>Loading...</div>
 
 }
