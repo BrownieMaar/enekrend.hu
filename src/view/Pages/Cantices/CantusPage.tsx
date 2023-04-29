@@ -1,15 +1,14 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
-import {Cantus} from "../../../model/types/CantusTypes";
+import {CantusData} from "../../../model/types/CantusTypes";
 import {DatabaseContext, UserContext} from "../../App";
-import {CantusImpl} from "../../../controller/CantusImpl";
 import CantusEditor from "../../Components/CantusEditor";
 
 export default function CantusPage() {
     const db = useContext(DatabaseContext);
     const user = useContext(UserContext);
     const { id } = useParams();
-    const [cantus, setCantus] = useState<Cantus | undefined>(undefined);
+    const [cantusData, setCantusData] = useState<CantusData | undefined>(undefined);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,8 +17,8 @@ export default function CantusPage() {
             return
         }
         db.cantus.getCantusById(id).then(data => {
-            const newCantus: Cantus = new CantusImpl(data.cantusData);
-            setCantus(newCantus)
+            const newCantus: CantusData = data.cantusData
+            setCantusData(newCantus)
         });
     }, [id]);
 
@@ -28,11 +27,11 @@ export default function CantusPage() {
             alert("Not logged in. You can't save this way!")
             return;
         }
-        if (!cantus) {
+        if (!cantusData) {
             alert("No cantus loaded")
             return;
         }
-        db.cantus.addNewCantusVersion(cantus.getCantusData(), user.uid).then(docId => {
+        db.cantus.addNewCantusVersion(cantusData, user.uid).then(docId => {
             db.cantus.getCantusById(docId).then(cantusDto => {
                 console.log(cantusDto)
                 navigate(-1)
@@ -45,8 +44,8 @@ export default function CantusPage() {
         navigate(-1)
     }
 
-    return cantus
-        ? <CantusEditor onSave={onSave} onCancel={onCancel} cantusData={cantus.getCantusData()} loggedIn={!!user} />
+    return cantusData
+        ? <CantusEditor onSave={onSave} onCancel={onCancel} cantusData={cantusData} loggedIn={!!user} />
         : <div>Loading...</div>
 
 }
