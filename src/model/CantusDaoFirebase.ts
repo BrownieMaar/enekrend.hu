@@ -33,6 +33,26 @@ export class CantusDaoFirebase implements CantusDao {
         }
     }
 
+    async addNewCantusVersion(cantusData: CantusData, userId: string): Promise<string> {
+        try {
+            const docRef = doc(this.db, "cantus", cantusData.uniqueId)
+
+            const subcollectionRef = collection(docRef, "versions");
+
+            await addDoc(subcollectionRef, {
+                userId: userId,
+                created: serverTimestamp(),
+                cantusData: cantusData,
+            });
+
+            console.log("Cantus written with ID: ", subcollectionRef.id);
+            return docRef.id
+        } catch (e) {
+            console.log("Error adding cantus: ", e);
+            throw e;
+        }
+    }
+
     async getCantusById(uniqueId: string): Promise<CantusDto> {
 
         const docRef = collection(this.db, "cantus", uniqueId, "versions");
@@ -78,6 +98,5 @@ export class CantusDaoFirebase implements CantusDao {
         return returnArray;
 
     }
-
 
 }
