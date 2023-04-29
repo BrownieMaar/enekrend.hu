@@ -91,7 +91,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #f1f1f1;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -108,7 +108,7 @@ h1 {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: #f1f1f1;
   }
 
   a:hover {
