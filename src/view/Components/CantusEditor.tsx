@@ -93,6 +93,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
             <Autocomplete
                 disablePortal
                 options={GenreOptionsWithLabels}
+                defaultValue={cantus.genre ? GenreOptionsWithLabels.find((genre) => genre.value === cantus.genre) : undefined}
                 sx={{ minWidth: 200, flexGrow: 1 }}
                 renderInput={(params) => <TextField {...params} label="Genre" />}
                 onChange={(_e, newValue) => newValue?.value ? updateCantus.genre(newValue?.value) : updateCantus.genre(undefined)}
@@ -111,6 +112,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
                 label="Cantus ID"
                 sx={{ minWidth: 200, flexGrow: 1 }}
                 value={cantus.cantusId}
+                defaultValue={cantus.cantusId}
                 onInput={(e) => updateCantus.cantusId((e.target as HTMLInputElement).value)}
             />
             <TextField
@@ -122,6 +124,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
                 disablePortal
                 options={ToneOptionsWithLabels}
                 sx={{ minWidth: 200, flexGrow: 1 }}
+                defaultValue={cantus.tone ? ToneOptionsWithLabels.find((tone) => tone.value === cantus.tone) : undefined}
                 renderInput={(params) => <TextField {...params} label="Tone" />}
                 onChange={(_e, newValue) => newValue?.value ? updateCantus.tone(newValue?.value) : updateCantus.tone(undefined)}
             />
@@ -134,6 +137,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
                         disablePortal
                         options={BibleBooksWithLabels}
                         sx={{ minWidth: 200, flexGrow: 5 }}
+                        defaultValue={bibleQuote.book ? BibleBooksWithLabels.find((book) => book.value === bibleQuote.book) : undefined}
                         renderInput={(params) => <TextField {...params} label="Book" />}
                         onChange={(_e, newValue) => newValue && newValue.value ? updateCantus.bibleQuote(index, { ...bibleQuote, book: newValue.value }) : updateCantus.bibleQuote(index, { ...bibleQuote, book: undefined })}
                     />
@@ -184,6 +188,7 @@ export default function CantusEditor({ onSave, onCancel, cantusData, loggedIn }:
             multiline
             rows={4}
             value={cantus.notes}
+            defaultValue={cantus.notes}
             onInput={(e) => updateCantus.notes((e.target as HTMLInputElement).value)}
         />
         <Divider textAlign="left">Melody</Divider>

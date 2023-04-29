@@ -15,7 +15,7 @@ export default function NewCantus() {
         if (!user) return
         try {
             const docId = await db.cantus.addNewCantus(cantus, user.uid)
-            db.cantus.getCantusByDocId(docId).then(cantusDto => {
+            db.cantus.getCantusById(docId).then(cantusDto => {
                 console.log(cantusDto)
             })
         }

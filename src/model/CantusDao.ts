@@ -3,6 +3,6 @@ import {CantusDto} from "./types/Dto";
 
 export interface CantusDao {
     addNewCantus(cantusData: CantusData, userId: string): Promise<string>;
-    getCantusByDocId(docId: string): Promise<CantusDto>;
+    getCantusById(uniqueId: string): Promise<CantusDto>;
     getCanticesWithUserIdAndTimestamp(): Promise<CantusDto[]>
 }

@@ -1,6 +1,6 @@
 import {CantusDao} from "./CantusDao";
 import {CantusData} from "./types/CantusTypes";
-import {addDoc, collection, doc, Firestore, getDoc, getDocs, getFirestore, serverTimestamp} from "firebase/firestore";
+import {addDoc, collection, doc, Firestore, getDocs, getFirestore, serverTimestamp, setDoc} from "firebase/firestore";
 import {FirebaseApp} from "firebase/app";
 import {CantusDto} from "./types/Dto";
 
@@ -13,12 +13,19 @@ export class CantusDaoFirebase implements CantusDao {
 
     async addNewCantus(cantusData: CantusData, userId: string): Promise<string> {
         try {
-            const docRef = await addDoc(collection(this.db, "cantus"), {
-                cantusData: cantusData,
+            const docRef = doc(this.db, "cantus", cantusData.uniqueId)
+
+            await setDoc(docRef, {creatorId: userId})
+
+            const subcollectionRef = collection(docRef, "versions");
+
+            await addDoc(subcollectionRef, {
                 userId: userId,
-                created: serverTimestamp()
-            })
-            console.log("Cantus written with ID: ", docRef.id);
+                created: serverTimestamp(),
+                cantusData: cantusData,
+            });
+
+            console.log("Cantus written with ID: ", subcollectionRef.id);
             return docRef.id
         } catch (e) {
             console.log("Error adding cantus: ", e);
@@ -26,34 +33,47 @@ export class CantusDaoFirebase implements CantusDao {
         }
     }
 
-    async getCantusByDocId(docId: string): Promise<CantusDto> {
+    async getCantusById(uniqueId: string): Promise<CantusDto> {
 
-        const docRef = doc(this.db, "cantus", docId);
+        const docRef = collection(this.db, "cantus", uniqueId, "versions");
 
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) throw new Error("No cantus with docId " + docId + " found");
+        const querySnapshot = await getDocs(docRef);
+        if (querySnapshot.empty) throw new Error("Cantus with id " + uniqueId + " empty");
+        const versions = querySnapshot.docs.sort((a, b) => b.data().created.toDate().getTime() - a.data().created.toDate().getTime());
+
         return {
-            docId: docSnap.id,
-            userId: docSnap.data().userId,
-            created: docSnap.data().created.toDate(),
-            cantusData: docSnap.data().cantusData,
-        };
-
+            docId: versions[0].id,
+            userId: versions[0].data().userId,
+            created: versions[0].data().created.toDate(),
+            cantusData: versions[0].data().cantusData,
+        }
     }
 
     async getCanticesWithUserIdAndTimestamp(): Promise<CantusDto[]> {
         const cantusRef = collection(this.db, "cantus");
+        console.log("starting query...")
 
         const returnArray: CantusDto[] = [];
         const querySnapshot = await getDocs(cantusRef);
-        querySnapshot.forEach((doc) => {
-            returnArray.push({
-                docId: doc.id,
-                userId: doc.data().userId,
-                created: doc.data().created.toDate(),
-                cantusData: doc.data().cantusData,
-            });
-        });
+
+        for (const querySnapshotElement of querySnapshot.docs) {
+            const versionsArray: CantusDto[] = [];
+
+            const versionsRef = collection(querySnapshotElement.ref, "versions");
+            const versionsSnapshot = await getDocs(versionsRef);
+
+            for (const versionsSnapshotElement of versionsSnapshot.docs) {
+                versionsArray.push({
+                    docId: versionsSnapshotElement.id,
+                    userId: versionsSnapshotElement.data().userId,
+                    created: versionsSnapshotElement.data().created.toDate(),
+                    cantusData: versionsSnapshotElement.data().cantusData,
+                })
+            }
+
+            const mostRecentVersion = versionsArray.sort((a, b) => b.created.getTime() - a.created.getTime())[0];
+            returnArray.push(mostRecentVersion);
+        }
 
         return returnArray;
 

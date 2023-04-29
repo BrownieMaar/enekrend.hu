@@ -28,13 +28,13 @@ export default function Cantices() {
         }
     }, [cantices]);
 
-    return !cantices ? <></> : <Grid container spacing={2}>
+    return !cantices ? <Typography variant={"h4"}>Loading...</Typography> : <Grid container spacing={2}>
         {cantices.map((cantusDto, i) => {
                 const cantus = new CantusImpl(cantusDto.cantusData);
                 return <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={i}>
                     <Paper elevation={3} id={`grid-item-${i}`}
                            style={{padding: 10, cursor: "pointer"}}
-                           onClick={(_e) => navigate("/cantus/" + cantusDto.docId)}
+                           onClick={(_e) => navigate("/cantus/" + cantusDto.cantusData.uniqueId)}
                     >
                         <Typography variant="h5" style={{marginBottom: 10}}>
                             {cantus.getIncipit()}
