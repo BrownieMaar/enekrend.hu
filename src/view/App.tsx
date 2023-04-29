@@ -14,18 +14,20 @@ import {LiturgyDao} from "../model/LiturgyDao";
 import {LiturgyDaoFirebase} from "../model/LiturgyDaoFirebase";
 import {CodexDaoFirebase} from "../model/CodexDaoFirebase";
 import {CodexDao} from "../model/CodexDao";
+import {ThemeProvider, useMediaQuery} from "@mui/material";
+import {enekrendThemeDark, enekrendThemeLight} from "./Themes";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
-  authDomain: "enekrend-hu.firebaseapp.com",
-  projectId: "enekrend-hu",
-  storageBucket: "enekrend-hu.appspot.com",
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_APP_ID,
-  measurementId: import.meta.env.VITE_MEASUREMENT_ID
+    apiKey: import.meta.env.VITE_API_KEY,
+    authDomain: "enekrend-hu.firebaseapp.com",
+    projectId: "enekrend-hu",
+    storageBucket: "enekrend-hu.appspot.com",
+    messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_APP_ID,
+    measurementId: import.meta.env.VITE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
@@ -34,24 +36,24 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 const db = {
-  user: new UserDaoFirebase(app) as UserDao,
-  cantus: new CantusDaoFirebase(app) as CantusDao,
-  liturgy: new LiturgyDaoFirebase(app) as LiturgyDao,
-  codex: new CodexDaoFirebase(app) as CodexDao,
+    user: new UserDaoFirebase(app) as UserDao,
+    cantus: new CantusDaoFirebase(app) as CantusDao,
+    liturgy: new LiturgyDaoFirebase(app) as LiturgyDao,
+    codex: new CodexDaoFirebase(app) as CodexDao,
 }
 
 const googlePopUpSignIn = async () => {
-  const res = await signInWithPopup(auth, provider)
+    const res = await signInWithPopup(auth, provider)
 
-  try {
-    if (await db.user.AddUser(res.user)) {
-      console.log("User added to database")
+    try {
+        if (await db.user.AddUser(res.user)) {
+            console.log("User added to database")
+        }
+    } catch (error) {
+        console.error(error)
     }
-  } catch (error) {
-    console.error(error)
-  }
 
-  return res.user.uid
+    return res.user.uid
 }
 const signOut = () => auth.signOut()
 
@@ -59,21 +61,24 @@ export const DatabaseContext = createContext<typeof db>(db)
 export const UserContext = createContext<User | null | undefined>(null)
 
 
-
 function App() {
-  const [user] = useAuthState(auth)
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const [user] = useAuthState(auth)
 
-  return <DatabaseContext.Provider value={db}>
-    <UserContext.Provider value={user}>
-      <Router>
-        <Routes>
-          <Route element={<Layout signIn={googlePopUpSignIn} signOut={signOut} />} >
-            {ROUTES.map((route, index) => <Route key={index} path={route.path} element={route.element} />)}
-          </Route>
-        </Routes>
-      </Router>
-    </UserContext.Provider>
-  </DatabaseContext.Provider>
+    return <DatabaseContext.Provider value={db}>
+        <UserContext.Provider value={user}>
+            <ThemeProvider theme={prefersDarkMode ? enekrendThemeDark : enekrendThemeLight}>
+                <Router>
+                    <Routes>
+                        <Route element={<Layout signIn={googlePopUpSignIn} signOut={signOut}/>}>
+                            {ROUTES.map((route, index) => <Route key={index} path={route.path}
+                                                                 element={route.element}/>)}
+                        </Route>
+                    </Routes>
+                </Router>
+            </ThemeProvider>
+        </UserContext.Provider>
+    </DatabaseContext.Provider>
 }
 
 export default App
