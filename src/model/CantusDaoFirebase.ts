@@ -2,7 +2,7 @@ import {CantusDao} from "./CantusDao";
 import {CantusData} from "./types/CantusTypes";
 import {addDoc, collection, doc, Firestore, getDocs, getFirestore, serverTimestamp, setDoc} from "firebase/firestore";
 import {FirebaseApp} from "firebase/app";
-import {CantusDto} from "./types/Dto";
+import {CantusDto, CantusVersionDto} from "./types/Dto";
 
 export class CantusDaoFirebase implements CantusDao {
     db: Firestore;
@@ -53,7 +53,7 @@ export class CantusDaoFirebase implements CantusDao {
         }
     }
 
-    async getCantusById(uniqueId: string): Promise<CantusDto> {
+    async getCantusById(uniqueId: string, versionId?: string): Promise<CantusDto> {
 
         const docRef = collection(this.db, "cantus", uniqueId, "versions");
 
@@ -97,6 +97,21 @@ export class CantusDaoFirebase implements CantusDao {
 
         return returnArray;
 
+    }
+
+    async getCantusVersionDTOsById(uniqueId: string): Promise<CantusVersionDto[]> {
+        const docRef = collection(this.db, "cantus", uniqueId, "versions");
+        const querySnapshot = await getDocs(docRef);
+        if (querySnapshot.empty) throw new Error("Cantus with id " + uniqueId + " empty");
+        const versionDTOs: CantusVersionDto[] = [];
+        querySnapshot.forEach((doc) => {
+            versionDTOs.push({
+                docId: doc.id,
+                userId: doc.data().userId,
+                created: doc.data().created.toDate(),
+            })
+        });
+        return versionDTOs;
     }
 
 }
