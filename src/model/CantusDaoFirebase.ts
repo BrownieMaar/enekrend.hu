@@ -1,6 +1,16 @@
 import {CantusDao} from "./CantusDao";
 import {CantusData} from "./types/CantusTypes";
-import {addDoc, collection, doc, Firestore, getDocs, getFirestore, serverTimestamp, setDoc} from "firebase/firestore";
+import {
+    addDoc,
+    collection,
+    doc,
+    Firestore,
+    getDoc,
+    getDocs,
+    getFirestore,
+    serverTimestamp,
+    setDoc
+} from "firebase/firestore";
 import {FirebaseApp} from "firebase/app";
 import {CantusDto, CantusVersionDto} from "./types/Dto";
 
@@ -55,13 +65,26 @@ export class CantusDaoFirebase implements CantusDao {
 
     async getCantusById(uniqueId: string, versionId?: string): Promise<CantusDto> {
 
+        if (versionId) {
+
+            const docRef = doc(this.db, "cantus", uniqueId, "versions", versionId);
+            const docSnap = await getDoc(docRef);
+
+            if (!docSnap.exists()) throw new Error("Cantus with id " + uniqueId + " and versionId " + versionId + " does not exist");
+
+            return {
+                docId: docSnap.id,
+                userId: docSnap.data().userId,
+                created: docSnap.data().created.toDate(),
+                cantusData: docSnap.data().cantusData,
+            }
+        }
+
         const docRef = collection(this.db, "cantus", uniqueId, "versions");
 
         const querySnapshot = await getDocs(docRef);
         if (querySnapshot.empty) throw new Error("Cantus with id " + uniqueId + " empty");
-        const version = versionId
-            ? querySnapshot.docs.find(doc => doc.id === versionId) || querySnapshot.docs[0]
-            : querySnapshot.docs.sort((a, b) => b.data().created.toDate().getTime() - a.data().created.toDate().getTime())[0];
+        const version = querySnapshot.docs.sort((a, b) => b.data().created.toDate().getTime() - a.data().created.toDate().getTime())[0];
 
         return {
             docId: version.id,
