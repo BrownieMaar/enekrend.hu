@@ -62,7 +62,7 @@ export default function CantusPage() {
             {user ? <ViewEditPicker editing={editing} setEditing={setEditing}/> : <></>}
 
             {
-                editing
+                user && editing
                     ?
                     <Paper sx={{padding: 4}}>
                         <CantusEditor onSave={onSave} onCancel={onCancel} cantusData={cantusData} loggedIn={!!user}/>
