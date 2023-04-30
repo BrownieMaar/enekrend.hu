@@ -135,7 +135,7 @@ export class CantusDaoFirebase implements CantusDao {
                 created: doc.data().created.toDate(),
             })
         });
-        return versionDTOs;
+        return versionDTOs.sort((a, b) => b.created.getTime() - a.created.getTime());
     }
 
 }
