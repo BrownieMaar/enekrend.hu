@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {CantusData} from "../../../model/types/CantusTypes";
 import {DatabaseContext, UserContext} from "../../App";
 import CantusEditor from "../../Components/CantusEditor";
@@ -7,6 +7,17 @@ import {Paper, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import CantusViewer from "../../Components/CantusViewer";
+
+const ViewEditPicker = ({editing, setEditing}: {editing: boolean, setEditing:  React.Dispatch<React.SetStateAction<boolean>>}) => <Stack direction={"row"} spacing={2} justifyContent={"flex-end"} sx={{marginBlock: 2}}>
+    <ToggleButtonGroup size={"small"} value={editing} color={"primary"}>
+        <ToggleButton value={false} onClick={() => setEditing(false)}>
+            <VisibilityIcon fontSize={"small"}/>
+        </ToggleButton>
+        <ToggleButton value={true} onClick={() => setEditing(true)}>
+            <ModeEditIcon fontSize={"small"}/>
+        </ToggleButton>
+    </ToggleButtonGroup>
+</Stack>
 
 export default function CantusPage() {
     const db = useContext(DatabaseContext);
@@ -45,18 +56,11 @@ export default function CantusPage() {
         setEditing(false)
     }
 
+
     return cantusData
         ? <>
-            <Stack direction={"row"} spacing={2} justifyContent={"flex-end"} sx={{marginBlock: 2}}>
-                <ToggleButtonGroup size={"small"} value={editing} color={"primary"}>
-                    <ToggleButton  value={false} onClick={() => setEditing(false)}>
-                        <VisibilityIcon fontSize={"small"}/>
-                    </ToggleButton>
-                    <ToggleButton  value={true} onClick={() => setEditing(true)}>
-                        <ModeEditIcon fontSize={"small"}/>
-                    </ToggleButton>
-                </ToggleButtonGroup>
-            </Stack>
+            {user ? <ViewEditPicker editing={editing} setEditing={setEditing}/> : <></>}
+
             {
                 editing
                     ?
@@ -65,7 +69,7 @@ export default function CantusPage() {
                     </Paper>
                     :
                     <Paper sx={{padding: 4}}>
-                        <CantusViewer cantusData={cantusData} />
+                        <CantusViewer cantusData={cantusData}/>
                     </Paper>
             }
         </>
