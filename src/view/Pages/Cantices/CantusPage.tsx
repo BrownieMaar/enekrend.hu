@@ -1,15 +1,30 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {useContext, useEffect, useState} from "react";
-import {Cantus} from "../../../model/types/CantusTypes";
+import React, {useContext, useEffect, useState} from "react";
+import {CantusData} from "../../../model/types/CantusTypes";
 import {DatabaseContext, UserContext} from "../../App";
-import {CantusImpl} from "../../../controller/CantusImpl";
 import CantusEditor from "../../Components/CantusEditor";
+import {Paper, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import CantusViewer from "../../Components/CantusViewer";
+
+const ViewEditPicker = ({editing, setEditing}: {editing: boolean, setEditing:  React.Dispatch<React.SetStateAction<boolean>>}) => <Stack direction={"row"} spacing={2} justifyContent={"flex-end"} sx={{marginBlock: 2}}>
+    <ToggleButtonGroup size={"small"} value={editing} color={"primary"}>
+        <ToggleButton value={false} onClick={() => setEditing(false)}>
+            <VisibilityIcon fontSize={"small"}/>
+        </ToggleButton>
+        <ToggleButton value={true} onClick={() => setEditing(true)}>
+            <ModeEditIcon fontSize={"small"}/>
+        </ToggleButton>
+    </ToggleButtonGroup>
+</Stack>
 
 export default function CantusPage() {
     const db = useContext(DatabaseContext);
     const user = useContext(UserContext);
-    const { id } = useParams();
-    const [cantus, setCantus] = useState<Cantus | undefined>(undefined);
+    const {id} = useParams();
+    const [cantusData, setCantusData] = useState<CantusData | undefined>(undefined);
+    const [editing, setEditing] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,21 +33,17 @@ export default function CantusPage() {
             return
         }
         db.cantus.getCantusById(id).then(data => {
-            const newCantus: Cantus = new CantusImpl(data.cantusData);
-            setCantus(newCantus)
+            const newCantus: CantusData = data.cantusData
+            setCantusData(newCantus)
         });
     }, [id]);
 
-    const onSave = () => {
+    const onSave = (cantusDataModified: CantusData) => {
         if (!user) {
             alert("Not logged in. You can't save this way!")
             return;
         }
-        if (!cantus) {
-            alert("No cantus loaded")
-            return;
-        }
-        db.cantus.addNewCantusVersion(cantus.getCantusData(), user.uid).then(docId => {
+        db.cantus.addNewCantusVersion(cantusDataModified, user.uid).then(docId => {
             db.cantus.getCantusById(docId).then(cantusDto => {
                 console.log(cantusDto)
                 navigate(-1)
@@ -42,11 +53,26 @@ export default function CantusPage() {
         })
     }
     const onCancel = () => {
-        navigate(-1)
+        setEditing(false)
     }
 
-    return cantus
-        ? <CantusEditor onSave={onSave} onCancel={onCancel} cantusData={cantus.getCantusData()} loggedIn={!!user} />
+
+    return cantusData
+        ? <>
+            {user ? <ViewEditPicker editing={editing} setEditing={setEditing}/> : <></>}
+
+            {
+                user && editing
+                    ?
+                    <Paper sx={{padding: 4}}>
+                        <CantusEditor onSave={onSave} onCancel={onCancel} cantusData={cantusData} loggedIn={!!user}/>
+                    </Paper>
+                    :
+                    <Paper sx={{padding: 4}}>
+                        <CantusViewer cantusData={cantusData}/>
+                    </Paper>
+            }
+        </>
         : <div>Loading...</div>
 
 }
