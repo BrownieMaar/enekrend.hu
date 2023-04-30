@@ -1,5 +1,5 @@
 import {Cantus, CantusData, GenreOptionsWithLabels, ToneOptionsWithLabels} from "../../model/types/CantusTypes";
-import {Box, Divider, Stack, Typography, useMediaQuery, useTheme} from "@mui/material";
+import {Box, Divider, Link, Stack, Typography, useMediaQuery, useTheme} from "@mui/material";
 import {CantusImpl} from "../../controller/CantusImpl";
 import {useEffect, useState} from "react";
 import {CantusRenderer} from "../../controller/CantusRenderer";
@@ -29,7 +29,7 @@ export default function CantusViewer({cantusData}: { cantusData: CantusData }) {
                 <i>unknown</i>}
             </Typography>
             <Typography variant={"body1"}>
-                <b>Cantus ID:</b> {cantus.cantusId ?? <i>unknown</i>}
+                <b>Cantus ID:</b> {cantus.cantusId ? <Link href={`https://cantusindex.org/id/${cantus.cantusId}`} target={"_blank"}>{cantus.cantusId}</Link> : <i>unknown</i>}
             </Typography>
             <Typography variant={"body1"}>
                 <b>Tone:</b> {ToneOptionsWithLabels.find(tone => cantus.tone === tone.value)?.label + "." ??
