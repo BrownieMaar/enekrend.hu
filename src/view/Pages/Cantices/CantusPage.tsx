@@ -6,6 +6,7 @@ import CantusEditor from "../../Components/CantusEditor";
 import {Paper, Stack, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import CantusViewer from "../../Components/CantusViewer";
 
 export default function CantusPage() {
     const db = useContext(DatabaseContext);
@@ -26,16 +27,12 @@ export default function CantusPage() {
         });
     }, [id]);
 
-    const onSave = () => {
+    const onSave = (cantusDataModified: CantusData) => {
         if (!user) {
             alert("Not logged in. You can't save this way!")
             return;
         }
-        if (!cantusData) {
-            alert("No cantus loaded")
-            return;
-        }
-        db.cantus.addNewCantusVersion(cantusData, user.uid).then(docId => {
+        db.cantus.addNewCantusVersion(cantusDataModified, user.uid).then(docId => {
             db.cantus.getCantusById(docId).then(cantusDto => {
                 console.log(cantusDto)
                 navigate(-1)
@@ -66,7 +63,10 @@ export default function CantusPage() {
                     <Paper sx={{padding: 4}}>
                         <CantusEditor onSave={onSave} onCancel={onCancel} cantusData={cantusData} loggedIn={!!user}/>
                     </Paper>
-                    : <div>{JSON.stringify(cantusData)}</div>
+                    :
+                    <Paper sx={{padding: 4}}>
+                        <CantusViewer cantusData={cantusData} />
+                    </Paper>
             }
         </>
         : <div>Loading...</div>
