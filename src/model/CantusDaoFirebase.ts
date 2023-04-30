@@ -59,13 +59,15 @@ export class CantusDaoFirebase implements CantusDao {
 
         const querySnapshot = await getDocs(docRef);
         if (querySnapshot.empty) throw new Error("Cantus with id " + uniqueId + " empty");
-        const versions = querySnapshot.docs.sort((a, b) => b.data().created.toDate().getTime() - a.data().created.toDate().getTime());
+        const version = versionId
+            ? querySnapshot.docs.find(doc => doc.id === versionId) || querySnapshot.docs[0]
+            : querySnapshot.docs.sort((a, b) => b.data().created.toDate().getTime() - a.data().created.toDate().getTime())[0];
 
         return {
-            docId: versions[0].id,
-            userId: versions[0].data().userId,
-            created: versions[0].data().created.toDate(),
-            cantusData: versions[0].data().cantusData,
+            docId: version.id,
+            userId: version.data().userId,
+            created: version.data().created.toDate(),
+            cantusData: version.data().cantusData,
         }
     }
 
