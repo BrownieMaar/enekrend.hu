@@ -73,7 +73,6 @@ export class CantusDaoFirebase implements CantusDao {
 
     async getCanticesWithUserIdAndTimestamp(): Promise<CantusDto[]> {
         const cantusRef = collection(this.db, "cantus");
-        console.log("starting query...")
 
         const returnArray: CantusDto[] = [];
         const querySnapshot = await getDocs(cantusRef);
