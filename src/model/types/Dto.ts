@@ -6,3 +6,9 @@ export interface CantusDto {
     userId: string;
     created: Date;
 }
+
+export interface CantusVersionDto {
+    docId: string;
+    userId: string;
+    created: Date;
+}
