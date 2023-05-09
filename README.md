@@ -45,6 +45,10 @@ Then you can start the development server with the following command:
 npm run dev
 ```
 
+## Keeping track of the project
+
+A GitHub project on [this][github-project-url] page is used to keep track of the project's progress.
+
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
@@ -60,3 +64,4 @@ npm run dev
 [node-url]: https://nodejs.org/en/
 [npm-shield]: https://img.shields.io/badge/npm-v6.14.10-red?style=flat-square&logo=npm
 [npm-url]: https://www.npmjs.com/
+[github-project-url]: https://github.com/users/BrownieMaar/projects/2
