@@ -1,4 +1,4 @@
-import { BibleBooksWithLabels, BibleQuote } from "../model/types/CantusTypes";
+import { BibleBooksWithLabels, BibleQuote } from "../model/types/LiturgyTypes";
 
 export type BibleErrorMessage = { errorIn: keyof BibleQuote, errorMessage: string }
 
