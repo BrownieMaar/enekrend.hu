@@ -17,6 +17,10 @@ export interface LiturgyPart {
     contents: any;
 }
 
+export interface Rubric extends LiturgyPart {
+    contents: string;
+}
+
 
 export interface BibleQuote {
     book?: typeof BibleBooksWithLabels[number]["value"];
