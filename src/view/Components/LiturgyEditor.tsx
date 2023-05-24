@@ -2,8 +2,10 @@ import { Stack, Typography, SpeedDial, SpeedDialIcon, SpeedDialAction, Paper } f
 import { LiturgyData } from "../../model/types/LiturgyTypes";
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from "@mui/icons-material/Edit";
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import { useState } from "react";
 import { LiturgyMetaEditor } from "./LiturgyEditor/LiturgyMetaEditor";
+import { LiturgyPartForm } from "./LiturgyEditor/LiturgyPartForm";
 
 
 interface LiturgyEditorProps {
@@ -28,9 +30,15 @@ export default function LiturgyEditor({ liturgyData, loggedIn, onSave, onCancel 
             icon: <EditIcon />,
             onClick: () => setOpenDialog("meta")
         },
+        {
+            name: "Add element",
+            icon: <PlaylistAddIcon />,
+            onClick: () => setOpenDialog("liturgyPart")
+        }
     ]
 
     return <>
+        <LiturgyPartForm open={openDialog === "liturgyPart"} onClose={() => setOpenDialog("")} liturgyData={newLiturgyData} setLiturgyData={setNewLiturgyData} />
         <LiturgyMetaEditor open={openDialog === "meta"} newLiturgyData={newLiturgyData} setNewLiturgyData={setNewLiturgyData} onClose={() => setOpenDialog("")} />
         <SpeedDial
             sx={{ position: 'absolute', bottom: 16, right: 16 }}
