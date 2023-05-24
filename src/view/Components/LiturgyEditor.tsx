@@ -51,7 +51,9 @@ export default function LiturgyEditor({ liturgyData, loggedIn, onSave, onCancel 
             <Typography variant="h4">
                 {newLiturgyData?.name ?? <i>[New Liturgy]</i>}
             </Typography>
-
+            <Typography variant="h6">
+                {[newLiturgyData?.dies, newLiturgyData?.hora].filter(val => !!val).join(" · ")}
+            </Typography>
         </Stack>
     </>
 }
