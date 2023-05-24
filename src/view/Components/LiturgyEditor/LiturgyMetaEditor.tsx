@@ -35,7 +35,7 @@ export function LiturgyMetaEditor({ open, onClose, newLiturgyData, setNewLiturgy
                 defaultValue={currentMod.dies}
                 onChange={(e) => setCurrentMod({ ...currentMod, dies: e.target.value })} />
             <TextField
-                label="Office"
+                label="Hora"
                 defaultValue={currentMod.hora}
                 onChange={(e) => setCurrentMod({ ...currentMod, hora: e.target.value })} />
             <Stack direction="row" gap={2}>
