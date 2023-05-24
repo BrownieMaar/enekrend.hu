@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { BibleQuote } from "../../model/types/CantusTypes"
 import { BibleErrorMessage, bibleQuoteToString, getErrorsInBibleQuote } from "../bibleTools"
+import { BibleQuote } from "../../model/types/LiturgyTypes";
 
 describe("#bibleQuoteErrors", () => {
 

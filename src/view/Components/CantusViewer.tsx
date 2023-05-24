@@ -1,8 +1,9 @@
-import {Cantus, CantusData, GenreOptionsWithLabels, ToneOptionsWithLabels} from "../../model/types/CantusTypes";
+import {Cantus, CantusData, ToneOptionsWithLabels} from "../../model/types/CantusTypes";
 import {Box, Divider, Link, Stack, Typography, useMediaQuery, useTheme} from "@mui/material";
 import {CantusImpl} from "../../controller/CantusImpl";
 import {useEffect, useState} from "react";
 import {CantusRenderer} from "../../controller/CantusRenderer";
+import { GenreOptionsWithLabels } from "../../model/types/LiturgyTypes";
 
 export default function CantusViewer({cantusData}: { cantusData: CantusData }) {
     const isMoreThanLg = useMediaQuery(useTheme().breakpoints.up('lg'));
