@@ -1,17 +1,14 @@
 import {Autocomplete, Box, Button, Divider, Stack, TextField, Tooltip, Typography} from "@mui/material"
 import {
-    BibleBooksWithLabels,
-    BibleQuote,
     Cantus,
     CantusData,
-    Genre,
-    GenreOptionsWithLabels,
     Tone,
     ToneOptionsWithLabels
 } from "../../model/types/CantusTypes"
 import {useEffect, useState} from "react"
 import {CantusImpl} from "../../controller/CantusImpl";
 import {CantusRenderer} from "../../controller/CantusRenderer";
+import { BibleBooksWithLabels, BibleQuote, Genre, GenreOptionsWithLabels } from "../../model/types/LiturgyTypes";
 
 interface CantusEditorProps {
     onSave: (cantusData: CantusData) => void
