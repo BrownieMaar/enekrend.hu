@@ -20,6 +20,7 @@ export interface LiturgyPart {
 
 export interface Rubric extends LiturgyPart {
     contents: string;
+    type: "rubric";
 }
 
 
