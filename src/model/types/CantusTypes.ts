@@ -17,6 +17,7 @@ export interface CantusData extends LiturgyPart {
         clef: Clef,
     };
     tone?: Tone;
+    type: "cantus";
 }
 
 export interface CantusComponentProps {

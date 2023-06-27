@@ -1,13 +1,12 @@
 import {
-    BibleQuote,
     Cantus,
     CantusData,
     Clef,
-    Genre,
     KeySignature,
     MelodyWithText,
     Tone,
 } from "../model/types/CantusTypes";
+import { BibleQuote, Genre } from "../model/types/LiturgyTypes";
 import {getKeyFromString,} from "./fontTools";
 import {v4 as uuidv4} from "uuid";
 
@@ -21,6 +20,7 @@ export class CantusImpl implements Cantus {
     tone?: Tone | undefined;
     notes?: string;
     bibleQuote?: BibleQuote[];
+    type: "cantus" = "cantus";
 
     constructor(sourceData?: MelodyWithText[] | CantusData) {
         if (sourceData) {
@@ -62,6 +62,7 @@ export class CantusImpl implements Cantus {
         const returnObj: CantusData = {
             uniqueId: this.uniqueId,
             contents: this.contents,
+            type: "cantus"
         }
         if (this.cantusId) returnObj.cantusId = this.cantusId;
         if (this.codexSourceId) returnObj.codexSourceId = this.codexSourceId;

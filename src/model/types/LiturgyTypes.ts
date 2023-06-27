@@ -15,6 +15,7 @@ export interface LiturgyPart {
     notes?: string;
     bibleQuote?: BibleQuote[];
     contents: any;
+    type: "cantus" | "rubric" | "versicle" | "dialogus" | "psalmus" | "recitableText";
 }
 
 export interface Rubric extends LiturgyPart {
