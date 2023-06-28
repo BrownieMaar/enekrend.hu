@@ -65,12 +65,14 @@ function AddLiturgyPartMenu({ anchorEl, onClose, submitPart }: { anchorEl: HTMLE
     const open = Boolean(anchorEl);
     const onPopupClose = () => setPopupContent(null);
 
+    const wizardProps = { submitPart, onClose: onPopupClose };
+
     const wizardComponents: { [K in LiturgyPart["type"]]: React.ReactNode } = {
-        "versicle": <VersicleWizard submitPart={submitPart} />,
-        "psalmus": <PsalmWizard submitPart={submitPart} />,
-        "recitableText": <TextWizard submitPart={submitPart} />,
-        "rubric": <RubricWizard submitPart={submitPart} />,
-        "dialogus": <DialogWizard submitPart={submitPart} />,
+        "versicle": <VersicleWizard {...wizardProps} />,
+        "psalmus": <PsalmWizard {...wizardProps} />,
+        "recitableText": <TextWizard {...wizardProps} />,
+        "rubric": <RubricWizard {...wizardProps} />,
+        "dialogus": <DialogWizard {...wizardProps} />,
         "cantus": <div>chant</div>,
     }
 
