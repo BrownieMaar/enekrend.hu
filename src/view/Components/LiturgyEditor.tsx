@@ -3,6 +3,11 @@ import { LiturgyData, LiturgyPart, liturgyPartTypes } from "../../model/types/Li
 import { v4 as uuidv4 } from "uuid";
 import { Box, Button, Container, Dialog, IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import VersicleWizard from "./LiturgyPartWizards/VersicleWizard";
+import PsalmWizard from "./LiturgyPartWizards/PsalmWizard";
+import TextWizard from "./LiturgyPartWizards/TextWizard";
+import RubricWizard from "./LiturgyPartWizards/RubricWizard";
+import DialogWizard from "./LiturgyPartWizards/DialogWizard";
 
 interface LiturgyEditorProps {
     onSave: (cantusData: LiturgyData) => void
@@ -25,6 +30,12 @@ export default function LiturgyEditor({ onSave, onCancel, cantusData, loggedIn }
     const [liturgy, setLiturgy] = useState(cantusData || getEmptyLiturgyData());
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+    const addPartToLiturgy = (part: LiturgyPart, index: number = liturgy.parts.length - 1) => {
+        setLiturgy({
+            ...liturgy,
+            parts: [...liturgy.parts.slice(0, index), part, ...liturgy.parts.slice(index)]
+        })
+    }
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -40,30 +51,27 @@ export default function LiturgyEditor({ onSave, onCancel, cantusData, loggedIn }
         <p>ID: <code>{liturgy.uniqueId}</code></p>
         <Stack spacing={2} alignItems={"center"}>
             {liturgy.parts.map((part, index) => <LiturgyPartWrapper key={index} part={part} />)}
-            <Box>
-                <Button variant="contained" onClick={handleClick} startIcon={<AddIcon />} >Add part</Button>
-            </Box>
+            <Button variant="contained" onClick={handleClick} startIcon={<AddIcon />} >Add part</Button>
         </Stack>
 
-        <AddLiturgyPartMenu anchorEl={anchorEl} onClose={handleClose} />
-
+        <AddLiturgyPartMenu anchorEl={anchorEl} onClose={handleClose} submitPart={addPartToLiturgy} />
 
     </div >
 }
 
-function AddLiturgyPartMenu({ anchorEl, onClose }: { anchorEl: HTMLElement | null, onClose: () => void }) {
-    const [dialogContent, setDialogContent] = useState<React.ReactNode | null>(null);
+function AddLiturgyPartMenu({ anchorEl, onClose, submitPart }: { anchorEl: HTMLElement | null, onClose: () => void, submitPart: (part: LiturgyPart) => void }) {
+    const [popupContent, setPopupContent] = useState<React.ReactNode | null>(null);
 
     const open = Boolean(anchorEl);
-    const onDialogClose = () => setDialogContent(null);
+    const onPopupClose = () => setPopupContent(null);
 
     const wizardComponents: { [K in LiturgyPart["type"]]: React.ReactNode } = {
-        "versicle": <div>versicle</div>,
-        "psalmus": <div>psalm</div>,
-        "recitableText": <div>reading</div>,
+        "versicle": <VersicleWizard submitPart={submitPart} />,
+        "psalmus": <PsalmWizard submitPart={submitPart} />,
+        "recitableText": <TextWizard submitPart={submitPart} />,
+        "rubric": <RubricWizard submitPart={submitPart} />,
+        "dialogus": <DialogWizard submitPart={submitPart} />,
         "cantus": <div>chant</div>,
-        "rubric": <div>rubric</div>,
-        "dialogus": <div>dialog</div>,
     }
 
     return (<>
@@ -80,18 +88,18 @@ function AddLiturgyPartMenu({ anchorEl, onClose }: { anchorEl: HTMLElement | nul
                 <MenuItem
                     sx={{ px: 3 }}
                     key={index}
-                    onClick={(_) => { onClose(); setDialogContent(wizardComponents[partType.value]); }}
+                    onClick={(_) => { onClose(); setPopupContent(wizardComponents[partType.value]); }}
                 >
                     {partType.name}
                 </MenuItem>
             )}
         </Menu>
-        <DialogWrapper onClose={onDialogClose}>{dialogContent}</DialogWrapper>
+        <PopupWrapper onClose={onPopupClose}>{popupContent}</PopupWrapper>
     </>
     )
 }
 
-function DialogWrapper({ children, onClose }: { children: React.ReactNode | null, onClose: () => void }) {
+function PopupWrapper({ children, onClose }: { children: React.ReactNode | null, onClose: () => void }) {
     const open = Boolean(children);
     return open
         ? (
