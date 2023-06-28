@@ -7,6 +7,15 @@ export interface LiturgyData {
     parts: LiturgyPart[];
 }
 
+export const liturgyPartTypes = [
+    { name: "Cantus", value: "cantus" },
+    { name: "Rubric", value: "rubric" },
+    { name: "Versicle", value: "versicle" },
+    { name: "Dialog", value: "dialogus" },
+    { name: "Psalm", value: "psalmus" },
+    { name: "Text", value: "recitableText" },
+] as const;
+
 export interface LiturgyPart {
     cantusId?: string;
     uniqueId: string;
@@ -15,8 +24,9 @@ export interface LiturgyPart {
     notes?: string;
     bibleQuote?: BibleQuote[];
     contents: any;
-    type: "cantus" | "rubric" | "versicle" | "dialogus" | "psalmus" | "recitableText";
+    type: typeof liturgyPartTypes[number]["value"];
 }
+
 
 export interface Rubric extends LiturgyPart {
     contents: string;
