@@ -31,11 +31,10 @@ export interface Psalmus extends LiturgyPart {
 }
 
 export type TextBySyllablesAccented = {
-    text: [
-        {
-            syllable: string,
-            isSpaceAfter: boolean,
-            isAccent: boolean,
-        }
-    ]
+    text: {
+        syllable: string,
+        isSpaceAfter: boolean,
+        isAccent: boolean,
+    }[]
+
 }
