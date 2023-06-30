@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LiturgyData, LiturgyPart, liturgyPartTypes } from "../../model/types/LiturgyTypes"
+import { LiturgyData, LiturgyPart, Rubric, liturgyPartTypes } from "../../model/types/LiturgyTypes"
 import { v4 as uuidv4 } from "uuid";
 import { Box, Button, Container, Dialog, IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
@@ -8,6 +8,12 @@ import PsalmWizard from "./LiturgyPartWizards/PsalmWizard";
 import TextWizard from "./LiturgyPartWizards/TextWizard";
 import RubricWizard from "./LiturgyPartWizards/RubricWizard";
 import DialogWizard from "./LiturgyPartWizards/DialogWizard";
+import { Dialogus, Psalmus, RecitableText, Versicle } from "../../model/types/RecitableTypes";
+import VersicleCard from "./LiturgyPartCards/Versicle";
+import RubricCard from "./LiturgyPartCards/Rubric";
+import DialogCard from "./LiturgyPartCards/Dialog";
+import PsalmCard from "./LiturgyPartCards/Psalm";
+import RecitableTextCard from "./LiturgyPartCards/RecitableText";
 
 interface LiturgyEditorProps {
     onSave: (cantusData: LiturgyData) => void
@@ -116,8 +122,10 @@ function PopupWrapper({ children, onClose }: { children: React.ReactNode | null,
 
 function LiturgyPartWrapper({ part }: { part: LiturgyPart }) {
     return <div>
-        <h3>{part.genre}</h3>
-        <div>{JSON.stringify(part.contents)}</div>
-        <div>{JSON.stringify(part.type)}</div>
+        {part.type === "versicle" && <VersicleCard part={part as Versicle} />}
+        {part.type === "rubric" && <RubricCard part={part as Rubric} />}
+        {part.type === "dialogus" && <DialogCard part={part as Dialogus} />}
+        {part.type === "recitableText" && <RecitableTextCard part={part as RecitableText} />}
+        {part.type === "psalmus" && <PsalmCard part={part as Psalmus} />}
     </div>
 }
