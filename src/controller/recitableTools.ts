@@ -2,14 +2,11 @@ import { TextBySyllablesAccented } from "../model/types/RecitableTypes";
 
 export const getPlainTextBySyllablesAccented = (string: string): TextBySyllablesAccented => {
     return {
-        text: string.split("").reduce((acc, curr) => {
-            if (curr === " " && acc.length > 0) {
-                acc.at(-1)!.isSpaceAfter = true;
-            } else {
-                acc.push({ syllable: curr, isSpaceAfter: false, isAccent: false });
-            }
-            return acc;
-        }, [] as TextBySyllablesAccented["text"])
+        text: [{
+            syllable: string,
+            isSpaceAfter: false,
+            isAccent: false,
+        }]
     }
 }
 

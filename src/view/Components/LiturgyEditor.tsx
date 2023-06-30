@@ -49,7 +49,7 @@ export default function LiturgyEditor({ onSave, onCancel, cantusData, loggedIn }
         <h1>{liturgy.dies || "[Liturgical day]"}</h1>
         <h2>{liturgy.hora || "[Liturgical hour]"}</h2>
         <p>ID: <code>{liturgy.uniqueId}</code></p>
-        <Stack spacing={2} alignItems={"center"}>
+        <Stack spacing={2}>
             {liturgy.parts.map((part, index) => <LiturgyPartWrapper key={index} part={part} />)}
             <Button variant="contained" onClick={handleClick} startIcon={<AddIcon />} >Add part</Button>
         </Stack>
@@ -105,7 +105,7 @@ function PopupWrapper({ children, onClose }: { children: React.ReactNode | null,
     const open = Boolean(children);
     return open
         ? (
-            <Dialog onClose={onClose} open={open} fullWidth maxWidth="md">
+            <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
                 <Box p={2}>
                     {children}
                 </Box>
@@ -118,5 +118,6 @@ function LiturgyPartWrapper({ part }: { part: LiturgyPart }) {
     return <div>
         <h3>{part.genre}</h3>
         <div>{JSON.stringify(part.contents)}</div>
+        <div>{JSON.stringify(part.type)}</div>
     </div>
 }
