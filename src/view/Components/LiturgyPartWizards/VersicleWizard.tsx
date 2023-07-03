@@ -1,15 +1,16 @@
 import { Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import SaveIcon from '@mui/icons-material/Save';
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { getPlainTextBySyllablesAccented } from "../../../controller/recitableTools";
+import { getPlainTextBySyllablesAccented, getStringFromTextBySyllablesAccented } from "../../../controller/recitableTools";
 import { LiturgyPart } from "../../../model/types/LiturgyTypes";
 import { Versicle } from "../../../model/types/RecitableTypes";
 
-export default function VersicleWizard({ submitPart, onClose }: { submitPart: (part: LiturgyPart) => void, onClose: () => void }) {
-    const [versus, setVersus] = useState("");
-    const [responsum, setResponsum] = useState("");
+export default function VersicleWizard({ submitPart, onClose, part }: { submitPart: (part: LiturgyPart) => void, onClose: () => void, part?: LiturgyPart }) {
+    const [versus, setVersus] = useState(part ? getStringFromTextBySyllablesAccented((part as Versicle).contents.versus) : "");
+    const [responsum, setResponsum] = useState(part ? getStringFromTextBySyllablesAccented((part as Versicle).contents.responsum) : "");
 
     const handleSubmitPart = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -29,12 +30,12 @@ export default function VersicleWizard({ submitPart, onClose }: { submitPart: (p
     return (
         <form onSubmit={handleSubmitPart}>
             <Stack spacing={2}>
-                <Typography variant={"h5"}>Add Versicle</Typography>
-                <TextField variant="outlined" label="Versum" onChange={(e) => setVersus(e.target.value)} />
-                <TextField variant="outlined" label="Responsum" onChange={(e) => setResponsum(e.target.value)} />
+                <Typography variant={"h5"}>{part ? "Edit" : "Add"} Versicle</Typography>
+                <TextField variant="outlined" defaultValue={versus} label="Versum" onChange={(e) => setVersus(e.target.value)} />
+                <TextField variant="outlined" defaultValue={responsum} label="Responsum" onChange={(e) => setResponsum(e.target.value)} />
                 <Stack direction={"row"} spacing={2} justifyContent={"flex-end"}>
                     <Button variant="contained" onClick={onClose} startIcon={<CloseIcon />}>Close</Button>
-                    <Button variant="contained" type="submit" color="success" startIcon={<AddIcon />} disabled={!versus || !responsum}>Add</Button>
+                    <Button variant="contained" type="submit" color="success" startIcon={part ? <SaveIcon /> : <AddIcon />} disabled={!versus || !responsum}>{part ? "Save" : "Add"}</Button>
                 </Stack>
             </Stack>
         </form>

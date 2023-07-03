@@ -2,15 +2,24 @@ import { useState } from "react";
 import { LiturgyPart } from "../../../model/types/LiturgyTypes";
 import { v4 as uuidv4 } from "uuid";
 import { Dialogus } from "../../../model/types/RecitableTypes";
-import { getPlainTextBySyllablesAccented } from "../../../controller/recitableTools";
+import { getPlainTextBySyllablesAccented, getStringFromTextBySyllablesAccented } from "../../../controller/recitableTools";
 import { Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 
-export default function DialogWizard({ submitPart, onClose }: { submitPart: (part: LiturgyPart) => void, onClose: () => void }) {
-    const [dialogs, setDialogs] = useState([{ versum: "", responsum: "" }]);
+const getStringContentsFromDialogContents = (content: Dialogus["contents"][number]) => {
+    return { versum: getStringFromTextBySyllablesAccented(content.versus), responsum: getStringFromTextBySyllablesAccented(content.responsum)}
+}
+
+export default function DialogWizard({ submitPart, onClose, part }: { submitPart: (part: LiturgyPart) => void, onClose: () => void, part?: LiturgyPart }) {
+    const [dialogs, setDialogs] = useState(
+        part 
+        ? (part as Dialogus).contents.map(getStringContentsFromDialogContents) 
+        : [{ versum: "", responsum: "" }]
+        );
 
     const areInputsValid = () => dialogs.every((v) => v.versum && v.responsum);
 
@@ -46,12 +55,12 @@ export default function DialogWizard({ submitPart, onClose }: { submitPart: (par
     return (
         <form onSubmit={handleSubmitPart}>
             <Stack spacing={4}>
-                <Typography variant={"h5"}>Add Versicle</Typography>
+                <Typography variant={"h5"}>{part ? "Edit" : "Add"} Text</Typography>
                 <Stack spacing={2} divider={<Divider />}>
                 {dialogs.map((_, index) => (
                     <Stack key={index} spacing={2}>
-                        <TextField variant="outlined" label={`Versum ${index+1}.`} onChange={(e) => setDialogElement(index, "versum", e.target.value)} />
-                        <TextField variant="outlined" label={`Responsum ${index+1}.`} onChange={(e) => setDialogElement(index, "responsum", e.target.value)} />
+                        <TextField variant="outlined" defaultValue={dialogs[index].versum} label={`Versum ${index+1}.`} onChange={(e) => setDialogElement(index, "versum", e.target.value)} />
+                        <TextField variant="outlined" defaultValue={dialogs[index].responsum} label={`Responsum ${index+1}.`} onChange={(e) => setDialogElement(index, "responsum", e.target.value)} />
                     </Stack>
                 ))}
                 </Stack>
@@ -62,7 +71,7 @@ export default function DialogWizard({ submitPart, onClose }: { submitPart: (par
                 </Stack>
                 <Stack direction={"row"} spacing={2}>
                     <Button variant="contained" onClick={onClose} startIcon={<CloseIcon />}>Close</Button>
-                    <Button variant="contained" type="submit" color="success" startIcon={<AddIcon />} disabled={!areInputsValid()}>Add</Button>
+                    <Button variant="contained" type="submit" color="success" startIcon={part ? <SaveIcon /> : <AddIcon />} disabled={!areInputsValid()}>{part ? "Save" : "Add"}</Button>
                 </Stack>
 
                 </Stack>
