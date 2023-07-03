@@ -125,7 +125,7 @@ export default function LiturgyEditor({ onSave, onCancel, cantusData, loggedIn }
         <h2>{liturgy.hora || "[Liturgical hour]"}</h2>
         <p>ID: <code>{liturgy.uniqueId}</code></p>
         <Stack spacing={2} >
-            {liturgy.parts.map((part, index) => <Stack direction={"row"} spacing={1} justifyContent={"stretch"} alignItems={"center"}>
+            {liturgy.parts.map((part, index) => <Stack key={`LiturgyCard with index ${index}`} direction={"row"} spacing={1} justifyContent={"stretch"} alignItems={"center"}>
                 <div style={{ flexGrow: 1 }}>
                     <LiturgyPartWrapper
                         part={part}
@@ -136,19 +136,25 @@ export default function LiturgyEditor({ onSave, onCancel, cantusData, loggedIn }
                 </div>
                 <Stack justifyContent={"center"}>
                     <Tooltip title="Move up" placement="left">
-                        <IconButton aria-label="move up" onClick={() => moveLiturgyPart(index, "up")} size="small" disabled={index === 0}>
-                            <KeyboardArrowUpIcon />
-                        </IconButton>
+                        <span>
+                            <IconButton aria-label="move up" onClick={() => moveLiturgyPart(index, "up")} size="small" disabled={index === 0}>
+                                <KeyboardArrowUpIcon />
+                            </IconButton>
+                        </span>
                     </Tooltip>
                     <Tooltip title="Add after this" placement="left">
-                        <IconButton aria-label="add after this" onClick={(e) => handleAddPartMenu(e, index + 1)} size="small">
-                            <PlaylistAddIcon />
-                        </IconButton>
+                        <span>
+                            <IconButton aria-label="add after this" onClick={(e) => handleAddPartMenu(e, index + 1)} size="small">
+                                <PlaylistAddIcon />
+                            </IconButton>
+                        </span>
                     </Tooltip>
                     <Tooltip title="Move down" placement="left">
-                        <IconButton aria-label="move down" onClick={() => moveLiturgyPart(index, "down")} size="small" disabled={index === liturgy.parts.length - 1}>
-                            <KeyboardArrowDownIcon />
-                        </IconButton>
+                        <span>
+                            <IconButton aria-label="move down" onClick={() => moveLiturgyPart(index, "down")} size="small" disabled={index === liturgy.parts.length - 1}>
+                                <KeyboardArrowDownIcon />
+                            </IconButton>
+                        </span>
                     </Tooltip>
                 </Stack>
             </Stack>)}

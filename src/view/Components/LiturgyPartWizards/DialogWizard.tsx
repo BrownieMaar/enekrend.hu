@@ -67,14 +67,18 @@ export default function DialogWizard({ submitPart, onClose, part }: { submitPart
                 <Stack direction={"row"} spacing={2} justifyContent={"space-between"}>
                     <Stack direction={"row"} spacing={2}>
                         <Tooltip title="Delete last pair" placement="top">
-                            <IconButton onClick={deleteLast} disabled={dialogs.length === 1}>
-                                <PlaylistRemoveIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton onClick={deleteLast} disabled={dialogs.length === 1}>
+                                    <PlaylistRemoveIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title="Add new pair" placement="top">
-                            <IconButton onClick={addEmptyToEnd}>
-                                <PlaylistAddIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton onClick={addEmptyToEnd}>
+                                    <PlaylistAddIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                     </Stack>
                     <Stack direction={"row"} spacing={2}>
