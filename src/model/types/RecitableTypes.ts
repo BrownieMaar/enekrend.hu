@@ -23,7 +23,7 @@ export interface Dialogus extends LiturgyPart {
 
 export interface Psalmus extends LiturgyPart {
     contents: {
-        flexa: TextBySyllablesAccented,
+        flexa?: TextBySyllablesAccented,
         mediatio: TextBySyllablesAccented,
         terminatio: TextBySyllablesAccented,
     }[];
