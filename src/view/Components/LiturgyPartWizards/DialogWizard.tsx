@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LiturgyPart } from "../../../model/types/LiturgyTypes";
 import { v4 as uuidv4 } from "uuid";
 import { Dialogus } from "../../../model/types/RecitableTypes";
-import { getPlainTextBySyllablesAccented, getStringFromTextBySyllablesAccented } from "../../../controller/recitableTools";
+import { getPlainTBSA, getStringFromTBSA } from "../../../controller/recitableTools";
 import { Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 
 const getStringContentsFromDialogContents = (content: Dialogus["contents"][number]) => {
-    return { versum: getStringFromTextBySyllablesAccented(content.versus), responsum: getStringFromTextBySyllablesAccented(content.responsum)}
+    return { versum: getStringFromTBSA(content.versus), responsum: getStringFromTBSA(content.responsum)}
 }
 
 export default function DialogWizard({ submitPart, onClose, part }: { submitPart: (part: LiturgyPart) => void, onClose: () => void, part?: LiturgyPart }) {
@@ -44,8 +44,8 @@ export default function DialogWizard({ submitPart, onClose, part }: { submitPart
             uniqueId: uuidv4(),
             contents: dialogs.map((v) => {
                 return {
-                    versus: getPlainTextBySyllablesAccented(v.versum),
-                    responsum: getPlainTextBySyllablesAccented(v.responsum),
+                    versus: getPlainTBSA(v.versum),
+                    responsum: getPlainTBSA(v.responsum),
                 }
             }),
             type: "dialogus",

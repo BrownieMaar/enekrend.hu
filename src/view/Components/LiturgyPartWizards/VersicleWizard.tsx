@@ -4,13 +4,13 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { getPlainTextBySyllablesAccented, getStringFromTextBySyllablesAccented } from "../../../controller/recitableTools";
+import { getPlainTBSA, getStringFromTBSA } from "../../../controller/recitableTools";
 import { LiturgyPart } from "../../../model/types/LiturgyTypes";
 import { Versicle } from "../../../model/types/RecitableTypes";
 
 export default function VersicleWizard({ submitPart, onClose, part }: { submitPart: (part: LiturgyPart) => void, onClose: () => void, part?: LiturgyPart }) {
-    const [versus, setVersus] = useState(part ? getStringFromTextBySyllablesAccented((part as Versicle).contents.versus) : "");
-    const [responsum, setResponsum] = useState(part ? getStringFromTextBySyllablesAccented((part as Versicle).contents.responsum) : "");
+    const [versus, setVersus] = useState(part ? getStringFromTBSA((part as Versicle).contents.versus) : "");
+    const [responsum, setResponsum] = useState(part ? getStringFromTBSA((part as Versicle).contents.responsum) : "");
 
     const handleSubmitPart = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -19,8 +19,8 @@ export default function VersicleWizard({ submitPart, onClose, part }: { submitPa
         submitPart({
             uniqueId: uuidv4(),
             contents: {
-                versus: getPlainTextBySyllablesAccented(versus),
-                responsum: getPlainTextBySyllablesAccented(responsum),
+                versus: getPlainTBSA(versus),
+                responsum: getPlainTBSA(responsum),
             },
             type: "versicle",
 

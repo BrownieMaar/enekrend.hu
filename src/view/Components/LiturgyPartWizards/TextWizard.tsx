@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Genre, GenreOptionsWithLabels, LiturgyPart } from "../../../model/types/LiturgyTypes";
-import { getPlainTextBySyllablesAccented, getStringFromTextBySyllablesAccented } from "../../../controller/recitableTools";
+import { getPlainTBSA, getStringFromTBSA } from "../../../controller/recitableTools";
 import { RecitableText } from "../../../model/types/RecitableTypes";
 import { v4 as uuidv4 } from "uuid";
 import { Autocomplete, Button, Stack, TextField, Typography } from "@mui/material";
@@ -9,7 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 
 export default function TextWizard({ submitPart, onClose, part }: { submitPart: (part: LiturgyPart) => void, onClose: () => void, part?: LiturgyPart }) {
-    const [text, setText] = useState(part ? getStringFromTextBySyllablesAccented((part as RecitableText).contents) : "");
+    const [text, setText] = useState(part ? getStringFromTBSA((part as RecitableText).contents) : "");
     const [genre, setGenre] = useState<Genre | undefined>(part ? (part as RecitableText).genre : undefined);
 
     const handleSubmitPart = (e: React.FormEvent<HTMLFormElement>) => {
@@ -18,7 +18,7 @@ export default function TextWizard({ submitPart, onClose, part }: { submitPart: 
         onClose();
         const recitableText = {
             uniqueId: uuidv4(),
-            contents: getPlainTextBySyllablesAccented(text),
+            contents: getPlainTBSA(text),
             type: "recitableText",
         } as RecitableText
         if (genre) recitableText.genre = genre;
