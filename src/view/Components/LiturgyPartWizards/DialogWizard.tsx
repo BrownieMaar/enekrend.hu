@@ -3,23 +3,23 @@ import { LiturgyPart } from "../../../model/types/LiturgyTypes";
 import { v4 as uuidv4 } from "uuid";
 import { Dialogus } from "../../../model/types/RecitableTypes";
 import { getPlainTBSA, getStringFromTBSA } from "../../../controller/recitableTools";
-import { Button, Divider, Stack, TextField, Typography } from "@mui/material";
+import { Button, Divider, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import DeleteIcon from '@mui/icons-material/Delete';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import SaveIcon from '@mui/icons-material/Save';
 
 const getStringContentsFromDialogContents = (content: Dialogus["contents"][number]) => {
-    return { versum: getStringFromTBSA(content.versus), responsum: getStringFromTBSA(content.responsum)}
+    return { versum: getStringFromTBSA(content.versus), responsum: getStringFromTBSA(content.responsum) }
 }
 
 export default function DialogWizard({ submitPart, onClose, part }: { submitPart: (part: LiturgyPart) => void, onClose: () => void, part?: LiturgyPart }) {
     const [dialogs, setDialogs] = useState(
-        part 
-        ? (part as Dialogus).contents.map(getStringContentsFromDialogContents) 
-        : [{ versum: "", responsum: "" }]
-        );
+        part
+            ? (part as Dialogus).contents.map(getStringContentsFromDialogContents)
+            : [{ versum: "", responsum: "" }]
+    );
 
     const areInputsValid = () => dialogs.every((v) => v.versum && v.responsum);
 
@@ -57,22 +57,30 @@ export default function DialogWizard({ submitPart, onClose, part }: { submitPart
             <Stack spacing={4}>
                 <Typography variant={"h5"}>{part ? "Edit" : "Add"} Text</Typography>
                 <Stack spacing={2} divider={<Divider />}>
-                {dialogs.map((_, index) => (
-                    <Stack key={index} spacing={2}>
-                        <TextField variant="outlined" defaultValue={dialogs[index].versum} label={`Versum ${index+1}.`} onChange={(e) => setDialogElement(index, "versum", e.target.value)} />
-                        <TextField variant="outlined" defaultValue={dialogs[index].responsum} label={`Responsum ${index+1}.`} onChange={(e) => setDialogElement(index, "responsum", e.target.value)} />
-                    </Stack>
-                ))}
+                    {dialogs.map((_, index) => (
+                        <Stack key={index} spacing={2}>
+                            <TextField variant="outlined" defaultValue={dialogs[index].versum} label={`Versum ${index + 1}.`} onChange={(e) => setDialogElement(index, "versum", e.target.value)} />
+                            <TextField variant="outlined" defaultValue={dialogs[index].responsum} label={`Responsum ${index + 1}.`} onChange={(e) => setDialogElement(index, "responsum", e.target.value)} />
+                        </Stack>
+                    ))}
                 </Stack>
                 <Stack direction={"row"} spacing={2} justifyContent={"space-between"}>
-                <Stack direction={"row"} spacing={2}>
-                    <Button variant="outlined" onClick={deleteLast} disabled={dialogs.length === 1} startIcon={<DeleteIcon />}>Less line</Button>
-                    <Button variant="outlined" onClick={addEmptyToEnd} startIcon={<PlaylistAddIcon />}>New line</Button>
-                </Stack>
-                <Stack direction={"row"} spacing={2}>
-                    <Button variant="contained" onClick={onClose} startIcon={<CloseIcon />}>Close</Button>
-                    <Button variant="contained" type="submit" color="success" startIcon={part ? <SaveIcon /> : <AddIcon />} disabled={!areInputsValid()}>{part ? "Save" : "Add"}</Button>
-                </Stack>
+                    <Stack direction={"row"} spacing={2}>
+                        <Tooltip title="Delete last pair" placement="top">
+                            <IconButton onClick={deleteLast} disabled={dialogs.length === 1}>
+                                <PlaylistRemoveIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Add new pair" placement="top">
+                            <IconButton onClick={addEmptyToEnd}>
+                                <PlaylistAddIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
+                    <Stack direction={"row"} spacing={2}>
+                        <Button variant="contained" onClick={onClose} startIcon={<CloseIcon />}>Close</Button>
+                        <Button variant="contained" type="submit" color="success" startIcon={part ? <SaveIcon /> : <AddIcon />} disabled={!areInputsValid()}>{part ? "Save" : "Add"}</Button>
+                    </Stack>
 
                 </Stack>
             </Stack>
