@@ -207,7 +207,7 @@ function PopupWrapper({ children, onClose }: { children: React.ReactNode, onClos
     const open = Boolean(children);
     return open
         ? (
-            <Dialog onClose={onClose} open={open} fullWidth maxWidth="sm">
+            <Dialog onClose={onClose} open={open} fullWidth maxWidth="md">
                 <Box p={2}>
                     {children}
                 </Box>
