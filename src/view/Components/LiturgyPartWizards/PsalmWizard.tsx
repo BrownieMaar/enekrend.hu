@@ -48,9 +48,9 @@ const TextareaWizardBody = ({ psalmLines, setPsalmLines }: { psalmLines: stringP
     }
 
     return <Stack spacing={2}>
-        <Stack spacing={2} divider={<Divider flexItem orientation="vertical" />} direction={"row"}>
+        <Stack spacing={2} divider={<Divider flexItem orientation="vertical" />} direction={"row"} maxHeight={400}>
             <textarea defaultValue={getTextareaString()} name="input psalms" key="textarea for inputting psalms" onChange={handleTextareaChange} rows={20} style={{ resize: "none", width: "100%", flexBasis: 0, flexGrow: 1 }} />
-            <div style={{ flexBasis: 0, flexGrow: 1, fontFamily: "Times New Roman, serif" }}>
+            <div style={{ flexBasis: 0, flexGrow: 1, fontFamily: "Times New Roman, serif", overflowY: "scroll" }}>
                 {psalmLines.map((verse, index) => (
                     <div key={`psalmLine ${index}`}>
                         {verse.flexa && <div>{verse.flexa} †</div>}
