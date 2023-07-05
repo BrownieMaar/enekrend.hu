@@ -23,7 +23,7 @@ export default function VersicleWizard({ submitPart, onClose, part }: { submitPa
                 responsum: getPlainTBSA(responsum),
             },
             type: "versicle",
-
+            genre: "Versic",
         } as Versicle)
     }
 
