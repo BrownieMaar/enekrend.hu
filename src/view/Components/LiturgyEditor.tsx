@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LiturgyData, LiturgyPart, Rubric, liturgyPartTypes } from "../../model/types/LiturgyTypes"
 import { v4 as uuidv4 } from "uuid";
-import { Box, Button, ButtonGroup, Card, Container, Dialog, IconButton, Menu, MenuItem, Stack, Tooltip } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, Container, Dialog, IconButton, Menu, MenuItem, Stack, Tooltip, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -21,40 +21,40 @@ import RecitableTextCard from "./LiturgyPartCards/RecitableText";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 interface LiturgyEditorProps {
-    onSave: (cantusData: LiturgyData) => void
+    onSave: (liturgyData: LiturgyData) => void
     onCancel: () => void
-    cantusData?: LiturgyData;
+    liturgyData?: LiturgyData;
     loggedIn?: boolean
 }
 
 const getEmptyLiturgyData = () => {
-    return {
-        "uniqueId": "47652167-0685-4c9f-b450-46929f2cc934",
-        "name": "",
-        "dies": "",
-        "hora": "",
-        "parts": [
-            {
-                "uniqueId": "c52ffa5b-b44f-44a2-878c-c5d1685f8fdf",
-                "contents": {
-                    "text": [
-                        {
-                            "syllable": "Let the fun begin!",
-                            "isSpaceAfter": false,
-                            "isAccent": false
-                        }
-                    ]
-                },
-                "type": "recitableText",
-                "genre": "Oratio"
-            },
-            {
-                "uniqueId": "72163a58-09d4-433b-9461-02427d777a59",
-                "contents": "This is where the fun begins.",
-                "type": "rubric"
-            }
-        ]
-    } as LiturgyData;
+    // return {
+    //     "uniqueId": "47652167-0685-4c9f-b450-46929f2cc934",
+    //     "name": "",
+    //     "dies": "",
+    //     "hora": "",
+    //     "parts": [
+    //         {
+    //             "uniqueId": "c52ffa5b-b44f-44a2-878c-c5d1685f8fdf",
+    //             "contents": {
+    //                 "text": [
+    //                     {
+    //                         "syllable": "Let the fun begin!",
+    //                         "isSpaceAfter": false,
+    //                         "isAccent": false
+    //                     }
+    //                 ]
+    //             },
+    //             "type": "recitableText",
+    //             "genre": "Oratio"
+    //         },
+    //         {
+    //             "uniqueId": "72163a58-09d4-433b-9461-02427d777a59",
+    //             "contents": "This is where the fun begins.",
+    //             "type": "rubric"
+    //         }
+    //     ]
+    // } as LiturgyData;
     return {
         uniqueId: uuidv4(),
         name: "",
@@ -64,8 +64,8 @@ const getEmptyLiturgyData = () => {
     } as LiturgyData;
 }
 
-export default function LiturgyEditor({ onSave, onCancel, cantusData, loggedIn }: LiturgyEditorProps) {
-    const [liturgy, setLiturgy] = useState(cantusData || getEmptyLiturgyData());
+export default function LiturgyEditor({ onSave, onCancel, liturgyData, loggedIn }: LiturgyEditorProps) {
+    const [liturgy, setLiturgy] = useState(liturgyData || getEmptyLiturgyData());
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [popupContent, setPopupContent] = useState<React.ReactNode>(null);
     const [indexToInsert, setIndexToInsert] = useState<number | null>(null);
@@ -121,9 +121,17 @@ export default function LiturgyEditor({ onSave, onCancel, cantusData, loggedIn }
     };
 
     return <div>
-        <h1>{liturgy.dies || "[Liturgical day]"}</h1>
-        <h2>{liturgy.hora || "[Liturgical hour]"}</h2>
-        <p>ID: <code>{liturgy.uniqueId}</code></p>
+        <Stack spacing={2} direction="row" justifyContent="space-between" alignItems="flex-start">
+            <Stack spacing={2}>
+                <Typography variant="h3">{liturgy.dies || "[Liturgical day]"}</Typography>
+                <Typography variant="h5">{liturgy.hora || "[Liturgical hour]"}</Typography>
+                <p>ID: <code>{liturgy.uniqueId}</code></p>
+            </Stack>
+            <Stack spacing={2} direction="row" justifyContent="flex-end" alignItems="flex-start">
+                <Button variant="contained" onClick={onCancel}>Cancel</Button>
+                <Button variant="contained" color="success" onClick={(_) => onSave(liturgy)} disabled={!loggedIn}>Save</Button>
+            </Stack>
+        </Stack>
         <Stack spacing={2} >
             {liturgy.parts.map((part, index) => <Stack key={`LiturgyCard with index ${index}`} direction={"row"} spacing={1} justifyContent={"stretch"} alignItems={"center"}>
                 <div style={{ flexGrow: 1 }}>
