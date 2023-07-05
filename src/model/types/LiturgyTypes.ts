@@ -23,6 +23,7 @@ export interface LiturgyPart {
     genre?: Genre;
     notes?: string;
     bibleQuote?: BibleQuote[];
+    title?: string;
     contents: any;
     type: typeof liturgyPartTypes[number]["value"];
 }

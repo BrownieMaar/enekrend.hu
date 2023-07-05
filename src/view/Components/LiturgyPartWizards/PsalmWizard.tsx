@@ -1,8 +1,8 @@
-import { Stack, Typography, Divider, TextField, Tooltip, IconButton, Button, Box, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import { Stack, Typography, Divider, TextField, Tooltip, IconButton, Button, Box, ToggleButtonGroup, ToggleButton, Autocomplete } from "@mui/material";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { getPlainTBSA, getStringFromTBSA } from "../../../controller/recitableTools";
-import { LiturgyPart } from "../../../model/types/LiturgyTypes";
+import { Genre, GenreOptionsWithLabels, LiturgyPart } from "../../../model/types/LiturgyTypes";
 import { Dialogus, Psalmus } from "../../../model/types/RecitableTypes";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
@@ -69,9 +69,11 @@ export default function PsalmWizard({ submitPart, onClose, part }: { submitPart:
     const [psalmLines, setPsalmLines] = useState<stringPsalmLines>(
         part
             ? (part as Psalmus).contents.map(getStringContentsFromPsalmContents)
-            : [{ flexa: undefined, mediatio: "", terminatio: "" }]
+            : [{ mediatio: "", terminatio: "" }]
     );
     const [inputMode, setInputMode] = useState<"mui" | "textarea">("mui");
+    const [title, setTitle] = useState(part?.title || "");
+    const [genre, setGenre] = useState<Genre | undefined>(part?.genre)
 
     const areInputsValid = () => psalmLines.every((v) => v.mediatio && v.terminatio);
 
@@ -105,6 +107,8 @@ export default function PsalmWizard({ submitPart, onClose, part }: { submitPart:
                 }
             }),
             type: "psalmus",
+            title: title || undefined,
+            genre: genre || undefined,
         } as Psalmus)
     }
 
@@ -171,6 +175,23 @@ export default function PsalmWizard({ submitPart, onClose, part }: { submitPart:
                             <VerticalSplitIcon />
                         </ToggleButton>
                     </ToggleButtonGroup>
+                </Stack>
+                <Stack direction={"row"} spacing={2}>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
+                        defaultValue={title}
+                        label={`Title`}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <Autocomplete
+                        options={GenreOptionsWithLabels.filter((g) => g.partType === "psalmus")}
+                        getOptionLabel={(option) => option.label}
+                        value={GenreOptionsWithLabels.find((g) => g.value === genre)}
+                        onChange={(_, value) => setGenre(value?.value)}
+                        renderInput={(params) => <TextField {...params} label="Genre" variant="outlined" />}
+                        sx={{minWidth: 200}}
+                    />
                 </Stack>
                 {inputMode === "mui" ? MuiWizardBody : <TextareaWizardBody psalmLines={psalmLines} setPsalmLines={setPsalmLines} />}
                 <Stack direction={"row"} spacing={2} justifyContent={"space-between"}>
