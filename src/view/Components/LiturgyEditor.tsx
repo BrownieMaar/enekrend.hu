@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { LiturgyData, LiturgyPart } from "../../model/types/LiturgyTypes"
-import { v4 as uuidv4 } from "uuid";
-import { Button, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import EditIcon from '@mui/icons-material/Edit';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import VersicleWizard from "./LiturgyPartWizards/VersicleWizard";
-import PsalmWizard from "./LiturgyPartWizards/PsalmWizard";
-import TextWizard from "./LiturgyPartWizards/TextWizard";
-import RubricWizard from "./LiturgyPartWizards/RubricWizard";
-import DialogWizard from "./LiturgyPartWizards/DialogWizard";
+import { Button, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { LiturgyData, LiturgyPart } from "../../model/types/LiturgyTypes";
+import { AddLiturgyPartMenu } from "./LiturgyEditor/AddLiturgyPartMenu";
 import { LiturgyPartWrapper } from "./LiturgyEditor/LiturgyPartWrapper";
 import { PopupWrapper } from "./LiturgyEditor/PopupWrapper";
-import { AddLiturgyPartMenu } from "./LiturgyEditor/AddLiturgyPartMenu";
-import EditIcon from '@mui/icons-material/Edit';
+import DialogWizard from "./LiturgyPartWizards/DialogWizard";
+import PsalmWizard from "./LiturgyPartWizards/PsalmWizard";
+import RubricWizard from "./LiturgyPartWizards/RubricWizard";
+import TextWizard from "./LiturgyPartWizards/TextWizard";
+import VersicleWizard from "./LiturgyPartWizards/VersicleWizard";
 
 interface LiturgyEditorProps {
     onSave: (liturgyData: LiturgyData) => void

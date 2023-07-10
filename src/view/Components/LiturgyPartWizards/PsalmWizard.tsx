@@ -1,18 +1,18 @@
-import { Stack, Typography, Divider, TextField, Tooltip, IconButton, Button, Box, ToggleButtonGroup, ToggleButton, Autocomplete } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import ContentCutIcon from '@mui/icons-material/ContentCut';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MenuIcon from '@mui/icons-material/Menu';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
+import SaveIcon from '@mui/icons-material/Save';
+import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
+import { Autocomplete, Box, Button, Divider, IconButton, Stack, TextField, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { getPlainTBSA, getStringFromTBSA } from "../../../controller/recitableTools";
 import { Genre, GenreOptionsWithLabels, LiturgyPart } from "../../../model/types/LiturgyTypes";
-import { Dialogus, Psalmus } from "../../../model/types/RecitableTypes";
-import CloseIcon from '@mui/icons-material/Close';
-import AddIcon from '@mui/icons-material/Add';
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
-import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
-import SaveIcon from '@mui/icons-material/Save';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MenuIcon from '@mui/icons-material/Menu';
-import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
+import { Psalmus } from "../../../model/types/RecitableTypes";
 
 const getStringContentsFromPsalmContents = (content: Psalmus["contents"][number]) => {
     return { flexa: content.flexa ? getStringFromTBSA(content.flexa) : undefined, mediatio: getStringFromTBSA(content.mediatio), terminatio: getStringFromTBSA(content.terminatio) }
