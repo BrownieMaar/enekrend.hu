@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LiturgyData, LiturgyPart } from "../../model/types/LiturgyTypes"
 import { v4 as uuidv4 } from "uuid";
-import { Button, Container, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { Button, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -14,6 +14,7 @@ import DialogWizard from "./LiturgyPartWizards/DialogWizard";
 import { LiturgyPartWrapper } from "./LiturgyEditor/LiturgyPartWrapper";
 import { PopupWrapper } from "./LiturgyEditor/PopupWrapper";
 import { AddLiturgyPartMenu } from "./LiturgyEditor/AddLiturgyPartMenu";
+import EditIcon from '@mui/icons-material/Edit';
 
 interface LiturgyEditorProps {
     onSave: (liturgyData: LiturgyData) => void
@@ -88,19 +89,48 @@ export default function LiturgyEditor({ onSave, onCancel, liturgyData, loggedIn 
         setIndexToInsert(null);
     };
 
-    return <div>
-        <Stack spacing={2} direction="row" justifyContent="space-between" alignItems="flex-start">
-            <Stack spacing={2}>
-                <Typography variant="h3">{liturgy.dies || "[Liturgical day]"}</Typography>
-                <Typography variant="h5">{liturgy.hora || "[Liturgical hour]"}</Typography>
-                <p>ID: <code>{liturgy.uniqueId}</code></p>
+    const MetaEditor = () => {
+        const [name, setName] = useState(liturgy.name);
+        const [dies, setDies] = useState(liturgy.dies);
+        const [hora, setHora] = useState(liturgy.hora);
+
+        const handleSubmit = () => {
+            setLiturgy({
+                ...liturgy,
+                name,
+                dies,
+                hora
+            })
+            onPopupClose();
+        }
+
+        return <Stack spacing={2}>
+            <Typography variant="h5">Edit liturgy metadata</Typography>
+            <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} />
+            <TextField label="Day" value={dies} onChange={(e) => setDies(e.target.value)} />
+            <TextField label="Hour" value={hora} onChange={(e) => setHora(e.target.value)} />
+            <Stack direction={"row"} spacing={2}>
+                <Button variant="contained" onClick={onPopupClose}>Cancel</Button>
+                <Button variant="contained" color="success" onClick={handleSubmit}>Save</Button>
             </Stack>
-            <Stack spacing={2} direction="row" justifyContent="flex-end" alignItems="flex-start">
-                <Button variant="contained" onClick={onCancel}>Cancel</Button>
-                <Button variant="contained" color="success" onClick={(_) => onSave(liturgy)} disabled={!loggedIn}>Save</Button>
-            </Stack>
+
         </Stack>
+    }
+
+    return <div>
         <Stack spacing={2} >
+            <Stack spacing={2} direction="row" justifyContent="space-between" alignItems="flex-start">
+                <Stack spacing={2}>
+                    <Typography variant="h3">{liturgy.dies || "[Liturgical day]"}</Typography>
+                    <Typography variant="h5">{liturgy.hora || "[Liturgical hour]"}</Typography>
+                    <p>ID: <code>{liturgy.uniqueId}</code></p>
+                    <Button sx={{ width: "fit-content" }} startIcon={<EditIcon />} onClick={_ => setPopupContent(<MetaEditor />)}>Edit liturgy data</Button>
+                </Stack>
+                <Stack spacing={2} direction="row" justifyContent="flex-end" alignItems="flex-start">
+                    <Button variant="contained" onClick={onCancel}>Cancel</Button>
+                    <Button variant="contained" color="success" onClick={(_) => onSave(liturgy)} disabled={!loggedIn}>Save</Button>
+                </Stack>
+            </Stack>
             {liturgy.parts.map((part, index) => <Stack key={`LiturgyCard with index ${index}`} direction={"row"} spacing={1} justifyContent={"stretch"} alignItems={"center"}>
                 <div style={{ flexGrow: 1 }}>
                     <LiturgyPartWrapper
